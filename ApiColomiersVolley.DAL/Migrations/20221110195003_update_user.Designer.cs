@@ -3,14 +3,16 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20221110195003_update_user")]
+    partial class update_user
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

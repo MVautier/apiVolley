@@ -21,10 +21,11 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 IdUser = user.IdUser,
                 Nom = user.Nom,
                 Prenom = user.Prenom,
-                Admin = user.Admin,
+                Role = user.Role,
                 Mail = user.Mail,
                 Password = user.Password,
-                ExpireDate = user.ExpireDate
+                CreationDate = user.CreationDate,
+                UpdateDate = user.UpdateDate
             };
         }
 
