@@ -18,9 +18,11 @@ namespace ApiColomiersVolley.DAL.Entities
         [Column("password", TypeName = "varchar(250)")]
         public string? Password { get; set; }
         [Column("creationDate")]
-        public DateTime? CreationDate { get; set; }
-        [Column("creationDate")]
+        public DateTime CreationDate { get; set; }
+        [Column("updateDate")]
         public DateTime? UpdateDate { get; set; }
+        [Column("endDate")]
+        public DateTime? EndDate { get; set; }
         [Column("role", TypeName = "varchar(50)")]
         [Required]
         public string Role { get; set; }

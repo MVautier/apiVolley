@@ -1,5 +1,5 @@
-﻿using ApiColomiersVolley.BLL.DMArticle.Repositories;
-using ApiColomiersVolley.BLL.DMAuthentication.Repositories;
+﻿using ApiColomiersVolley.BLL.DMAuthentication.Repositories;
+using ApiColomiersVolley.BLL.DMItem.Repositories;
 using ApiColomiersVolley.DAL.DataProviders;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,8 +14,10 @@ namespace ApiColomiersVolley.DAL
     {
         public static void AddDataLayerLocator(this IServiceCollection services)
         {
-            services.AddScoped<IDMArticleRepo, DPArticle>();
+            services.AddScoped<IDMItemRepo, DPItem>();
             services.AddScoped<IDMUserRepo, DPUser>();
+            services.AddScoped<IDMConnexionRepo, DPConnexion>();
+            services.AddScoped<IDMTokenRepo, DPToken>();
         }
     }
 }

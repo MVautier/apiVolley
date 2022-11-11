@@ -1,7 +1,5 @@
 ﻿using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools;
-using ApiColomiersVolley.BLL.DMArticle.Business;
-using ApiColomiersVolley.BLL.DMArticle.Business.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ApiColomiersVolley.BLL.DMAuthentication.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAuthentication.Business;
+using ApiColomiersVolley.BLL.DMItem.Business.Interfaces;
+using ApiColomiersVolley.BLL.DMItem.Business;
 
 namespace ApiColomiersVolley.BLL
 {
@@ -18,13 +18,15 @@ namespace ApiColomiersVolley.BLL
         public static void AddBusinessLocator(this IServiceCollection services)
         {
             // Businesses
-            services.AddScoped<IBSArticle, BSArticle>();
             services.AddScoped<IBSAuthentication, BSAuthentication>();
             services.AddScoped<IBSLogin, BSLogin>();
+            services.AddScoped<IBSItem, BSItem>();
+            services.AddScoped<IBSConnexion, BSConnexion>();
 
             // Core tools
             services.AddScoped<IJWTFactory, JWTFactory>();
             services.AddScoped<IServiceSendMail, SendMail>();
+            services.AddScoped<IEncryption, Encryption>();
         }
     }
 }

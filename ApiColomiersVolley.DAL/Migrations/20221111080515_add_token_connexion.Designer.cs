@@ -3,14 +3,16 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20221111080515_add_token_connexion")]
+    partial class add_token_connexion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,6 +48,7 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnName("lastRefresh");
 
                     b.Property<string>("Login")
+                        .IsRequired()
                         .HasColumnType("varchar(250)")
                         .HasColumnName("login");
 
@@ -167,13 +170,9 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("CreationDate")
+                    b.Property<DateTime?>("CreationDate")
                         .HasColumnType("datetime")
                         .HasColumnName("creationDate");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("endDate");
 
                     b.Property<string>("Mail")
                         .HasColumnType("varchar(250)")

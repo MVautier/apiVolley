@@ -12,5 +12,7 @@ namespace ApiColomiersVolley.BLL.DMAuthentication.Repositories
         Task<DtoUser> GetById(int id);
         Task<DtoUser> GetByMail(string mail);
         Task<DtoUser> Authenticate(string mail, string password);
+        Task<UserInfo> GetConnectingUser(Login login);
+        Task<UserInfo> GetRefreshUser(int idUser);
     }
 }

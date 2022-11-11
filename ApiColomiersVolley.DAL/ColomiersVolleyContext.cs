@@ -10,8 +10,10 @@ namespace ApiColomiersVolley.DAL
     {
         internal IConfiguration _config { get; }
 
-        public DbSet<Article> Articles { get; set; }
+        public DbSet<Item> Items { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Connexion> Connexions { get; set; }
+        public DbSet<Token> Tokens { get; set; }
 
         public ColomiersVolleyContext()
         {
@@ -38,10 +40,6 @@ namespace ApiColomiersVolley.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Article>()
-                .Property(p => p.Content)
-                .HasColumnType("text");
-
             base.OnModelCreating(modelBuilder);
         }
     }

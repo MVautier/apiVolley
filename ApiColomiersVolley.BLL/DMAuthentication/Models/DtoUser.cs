@@ -15,8 +15,9 @@ namespace ApiColomiersVolley.BLL.DMAuthentication.Models
         public string? Prenom { get; set; }
         public string? Mail { get; set; }
         public string? Password { get; set; }
-        public DateTime? CreationDate { get; set; }
+        public DateTime CreationDate { get; set; }
         public DateTime? UpdateDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string Role { get; set; }
     }
 }

@@ -1,22 +1,22 @@
-﻿using System;
+﻿using ApiColomiersVolley.BLL.DMAuthentication.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Models = ApiColomiersVolley.BLL.DMAuthentication.Models;
 
 namespace ApiColomiersVolley.DAL.Entities.Extensions
 {
     internal static class ExtensionUser
     {
-        internal static Models.DtoUser ToDtoUser(this User user)
+        internal static DtoUser ToDtoUser(this User user)
         {
             if (user == null)
             {
                 return null;
             }
 
-            return new Models.DtoUser
+            return new DtoUser
             {
                 IdUser = user.IdUser,
                 Nom = user.Nom,
@@ -25,13 +25,31 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Mail = user.Mail,
                 Password = user.Password,
                 CreationDate = user.CreationDate,
-                UpdateDate = user.UpdateDate
+                UpdateDate = user.UpdateDate,
+                EndDate = user.EndDate
             };
         }
 
-        internal static List<Models.DtoUser> ToDtoUser(this List<User> users)
+        internal static List<DtoUser> ToDtoUser(this List<User> users)
         {
             return users.Select(d => d.ToDtoUser()).ToList();
+        }
+
+        internal static UserInfo ToUserInfo(this User user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            return new UserInfo
+            {
+                IdUser = user.IdUser,
+                LastName = user.Nom,
+                FirstName = user.Prenom,
+                Mail = user.Mail,
+                ExpireDate = user.EndDate
+            };
         }
     }
 }

@@ -3,60 +3,21 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20221110210439_ajout_item_remove_article")]
+    partial class ajout_item_remove_article
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.17");
-
-            modelBuilder.Entity("ApiColomiersVolley.DAL.Entities.Connexion", b =>
-                {
-                    b.Property<int>("IdConnexion")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("BeginDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("beginDate");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("endDate");
-
-                    b.Property<int?>("IdUser")
-                        .HasColumnType("int")
-                        .HasColumnName("idUser");
-
-                    b.Property<string>("Ip")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("ip");
-
-                    b.Property<DateTime>("LastRefresh")
-                        .HasColumnType("datetime")
-                        .HasColumnName("lastRefresh");
-
-                    b.Property<string>("Login")
-                        .HasColumnType("varchar(250)")
-                        .HasColumnName("login");
-
-                    b.Property<int>("RefreshCount")
-                        .HasColumnType("int")
-                        .HasColumnName("refreshCount");
-
-                    b.HasKey("IdConnexion");
-
-                    b.ToTable("connexion");
-                });
 
             modelBuilder.Entity("ApiColomiersVolley.DAL.Entities.Item", b =>
                 {
@@ -65,17 +26,13 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int?>("Author")
-                        .HasColumnType("int")
-                        .HasColumnName("author");
-
                     b.Property<string>("Content")
                         .HasColumnType("text")
                         .HasColumnName("content");
 
-                    b.Property<DateTime?>("Date")
+                    b.Property<DateTime?>("CreationDate")
                         .HasColumnType("datetime")
-                        .HasColumnName("date");
+                        .HasColumnName("creationDate");
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(800)")
@@ -93,13 +50,13 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("idPost");
 
+                    b.Property<int?>("IdUser")
+                        .HasColumnType("int")
+                        .HasColumnName("idUser");
+
                     b.Property<string>("Ip")
                         .HasColumnType("varchar(800)")
                         .HasColumnName("ip");
-
-                    b.Property<DateTime?>("Modified")
-                        .HasColumnType("datetime")
-                        .HasColumnName("modified");
 
                     b.Property<int?>("Order")
                         .HasColumnType("int")
@@ -126,38 +83,13 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("type");
 
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updateDate");
+
                     b.HasKey("IdItem");
 
                     b.ToTable("item");
-                });
-
-            modelBuilder.Entity("ApiColomiersVolley.DAL.Entities.Token", b =>
-                {
-                    b.Property<int>("IdToken")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("BeginDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("beginDate");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("endDate");
-
-                    b.Property<int>("IdConnexion")
-                        .HasColumnType("int")
-                        .HasColumnName("idConnexion");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("varchar(8000)")
-                        .HasColumnName("key");
-
-                    b.HasKey("IdToken");
-
-                    b.ToTable("token");
                 });
 
             modelBuilder.Entity("ApiColomiersVolley.DAL.Entities.User", b =>
@@ -167,13 +99,9 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("CreationDate")
+                    b.Property<DateTime?>("CreationDate")
                         .HasColumnType("datetime")
                         .HasColumnName("creationDate");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("endDate");
 
                     b.Property<string>("Mail")
                         .HasColumnType("varchar(250)")

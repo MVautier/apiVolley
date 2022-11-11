@@ -1,5 +1,4 @@
-﻿using ApiColomiersVolley.BLL.DMArticle.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ApiColomiersVolley.Controllers
 {

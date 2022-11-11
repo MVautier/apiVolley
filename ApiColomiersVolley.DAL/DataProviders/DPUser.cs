@@ -1,5 +1,4 @@
-﻿using ApiColomiersVolley.BLL.DMArticle.Models;
-using ApiColomiersVolley.BLL.DMAuthentication.Models;
+﻿using ApiColomiersVolley.BLL.DMAuthentication.Models;
 using ApiColomiersVolley.BLL.DMAuthentication.Repositories;
 using ApiColomiersVolley.DAL.Entities.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -37,12 +36,24 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
         public async Task<DtoUser> GetByMail(string mail)
         {
-            return (await GetAll().FirstOrDefaultAsync(u => u.Mail == mail)).ToDtoUser();
+            return (await GetAll().FirstOrDefaultAsync(u => u.Mail.ToLower() == mail.ToLower())).ToDtoUser();
         }
 
         public async Task<DtoUser> Authenticate(string mail, string password)
         {
-            return (await GetAll().FirstOrDefaultAsync(u => u.Mail == mail && u.Password == password)).ToDtoUser();
+            return (await GetAll().FirstOrDefaultAsync(u => u.Mail.ToLower() == mail.ToLower() && u.Password == password)).ToDtoUser();
+        }
+
+        public async Task<UserInfo> GetConnectingUser(Login login)
+        {
+            return (await GetAll()
+                .FirstOrDefaultAsync(c => c.Mail.ToLower() == login.Email.ToLower() && c.Password == login.Password && (!c.EndDate.HasValue || c.EndDate.Value > DateTime.Now)))
+                .ToUserInfo();
+        }
+
+        public async Task<UserInfo> GetRefreshUser(int idUser)
+        {
+            return (await GetAll().FirstOrDefaultAsync(c => c.IdUser == idUser && (!c.EndDate.HasValue || c.EndDate.Value > DateTime.Now))).ToUserInfo();
         }
     }
 }

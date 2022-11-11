@@ -1,5 +1,4 @@
 ﻿using ApiColomiersVolley.BLL.Core.Exceptions;
-using ApiColomiersVolley.BLL.DMArticle.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAuthentication.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAuthentication.Exceptions;
 using ApiColomiersVolley.BLL.DMAuthentication.Models;
@@ -43,9 +42,7 @@ namespace ApiColomiersVolley.Controllers
                 Request.Headers.TryGetValue("Origin", out origin);
                 Request.Headers.TryGetValue("Referer", out referer);
                 var ip = Request.HttpContext.Connection?.RemoteIpAddress?.ToString();
-                await _bsAuth.ValidateClient(login.Email, login.ClientID, origin, referer, ip, Response);
-                var userInfo = _userAuth;
-                var token = await _bsAuth.LogInUser(login, ip, userInfo?.IdUserUnlogged);
+                var token = await _bsAuth.LogInUser(login, ip);
                 if (token == null)
                 {
                     return BadRequest();
@@ -86,7 +83,6 @@ namespace ApiColomiersVolley.Controllers
                 Request.Headers.TryGetValue("Origin", out origin);
                 Request.Headers.TryGetValue("Referer", out referer);
                 var ip = Request.HttpContext.Connection?.RemoteIpAddress?.ToString();
-                await _bsAuth.ValidateClient(null, refresh.ClientID, origin, referer, ip, Response);
                 var token = await _bsAuth.RefreshUser(refresh, ip);
                 if (token == null)
                 {
@@ -145,7 +141,6 @@ namespace ApiColomiersVolley.Controllers
                 Request.Headers.TryGetValue("Origin", out origin);
                 Request.Headers.TryGetValue("Referer", out referer);
                 var ip = Request.HttpContext.Connection?.RemoteIpAddress?.ToString();
-                await _bsAuth.ValidateClient(null, userEmail.ClientID, origin, referer, ip, Response);
                 return Ok(await _bsAuth.CheckUserEmail(userEmail));
             }
             catch (UnauthorizedAccessException ex)
