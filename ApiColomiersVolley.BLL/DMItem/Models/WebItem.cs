@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ApiColomiersVolley.BLL.DMItem.Models
 {
-    public class DtoItem
+    public class WebItem
     {
         public int IdItem { get; set; }
         public string? Title { get; set; }
@@ -22,7 +22,8 @@ namespace ApiColomiersVolley.BLL.DMItem.Models
         public string? Ip { get; set; }
         public int? Order { get; set; }
         public bool? Public { get; set; }
-        public int? Author { get; set; }
+        public int? IdAuthor { get; set; }
+        public string? Author { get; set; }
         public int? IdParent { get; set; }
         public int? IdCategory { get; set; }
         public int? IdPost { get; set; }

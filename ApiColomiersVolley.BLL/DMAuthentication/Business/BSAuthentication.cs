@@ -120,7 +120,9 @@ namespace ApiColomiersVolley.BLL.DMAuthentication.Business
                 id_token = jwtToken,
                 IdUser = user.IdUser,
                 expire_in = DateTime.Now.AddMinutes(tokenConfig.GetValue<int>("ExpireRefresh")),
-                refresh_token = await GenerateRefreshToken(user.IdUser, ip)
+                refresh_token = await GenerateRefreshToken(user.IdUser, ip),
+                firstname = user.FirstName,
+                lastname = user.LastName
             };
         }
 

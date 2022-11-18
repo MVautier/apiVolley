@@ -22,7 +22,7 @@ if (builder.Configuration.GetSection("FeatureActivation")?.GetValue<bool?>("enab
 {
     builder.Services.AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new() { Title = "ApiEasyFichiers", Version = "v1" });
+        c.SwaggerDoc("v1", new() { Title = "ApiColomiersVolley", Version = "v1" });
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 

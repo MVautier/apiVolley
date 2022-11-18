@@ -10,14 +10,16 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
 {
     internal static class ExtensionItem
     {
-        internal static Models.DtoItem ToDtoItem(this Item item)
+        internal static Models.WebItem ToWebItem(this Item item, List<User> users)
         {
             if (item == null)
             {
                 return null;
             }
 
-            return new Models.DtoItem
+            var user = item.Author.HasValue ? users.FirstOrDefault(u => u.IdUser == item.Author.Value) : null;
+
+            return new Models.WebItem
             {
                 IdItem = item.IdItem,
                 Title = item.Title,
@@ -30,19 +32,20 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Order = item.Order,
                 Public = item.Public,
                 Resume = item.Resume,
-                Author = item.Author,
+                IdAuthor = item.Author,
+                Author = user != null ? user.Prenom + " " + user.Nom : String.Empty,
                 IdParent = item.IdParent,
                 IdCategory = item.IdCategory,
                 IdPost = item.IdPost
             };
         }
 
-        internal static List<Models.DtoItem> ToDtoItem(this List<Item> items)
+        internal static List<Models.WebItem> ToWebItem(this List<Item> items, List<User> users)
         {
-            return items.Select(d => d.ToDtoItem()).ToList();
+            return items.Select(d => d.ToWebItem(users)).ToList();
         }
 
-        internal static Item ToItem(this DtoItem item)
+        internal static Item ToItem(this WebItem item)
         {
             if (item == null)
             {
@@ -62,14 +65,14 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Order = item.Order,
                 Public = item.Public,
                 Resume = item.Resume,
-                Author = item.Author,
+                Author = item.IdAuthor,
                 IdParent = item.IdParent,
                 IdCategory = item.IdCategory,
                 IdPost = item.IdPost
             };
         }
 
-        internal static List<Item> ToItem(this List<DtoItem> items)
+        internal static List<Item> ToItem(this List<WebItem> items)
         {
             return items.Select(d => d.ToItem()).ToList();
         }

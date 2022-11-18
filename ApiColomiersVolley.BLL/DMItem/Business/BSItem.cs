@@ -21,17 +21,25 @@ namespace ApiColomiersVolley.BLL.DMItem.Business
             _itemRepo = itemRepo;
         }
 
-        public async Task<IEnumerable<DtoItem>> GetListe()
+        public async Task<IEnumerable<WebItem>> GetListe()
         {
             return await _itemRepo.GetListe();
         }
 
-        public async Task<IEnumerable<DtoItem>> GetTree()
+        public async Task<Tree> GetTree()
         {
-            return await _itemRepo.GetByType("page");
+            var pages = await _itemRepo.GetByType("page");
+            var posts = await _itemRepo.GetByType("post");
+            var comments = await _itemRepo.GetByType("comment");
+            return new Tree()
+            {
+                pages = pages.Any() ? pages : new List<WebItem>(),
+                posts = pages.Any() ? posts : new List<WebItem>(),
+                comments = pages.Any() ? comments : new List<WebItem>()
+            };
         }
 
-        public async Task<DtoItem> AddOrUpdate(DtoItem item)
+        public async Task<WebItem> AddOrUpdate(WebItem item)
         {
             return await _itemRepo.AddOrUpdate(item);
         }

@@ -9,9 +9,9 @@ namespace ApiColomiersVolley.BLL.DMItem.Business.Interfaces
 {
     public interface IBSItem
     {
-        Task<IEnumerable<DtoItem>> GetListe();
-        Task<IEnumerable<DtoItem>> GetTree();
-        Task<DtoItem> AddOrUpdate(DtoItem item);
+        Task<IEnumerable<WebItem>> GetListe();
+        Task<Tree> GetTree();
+        Task<WebItem> AddOrUpdate(WebItem item);
         Task<bool> Remove(int id);
     }
 }

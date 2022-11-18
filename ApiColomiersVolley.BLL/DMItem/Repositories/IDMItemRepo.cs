@@ -9,9 +9,9 @@ namespace ApiColomiersVolley.BLL.DMItem.Repositories
 {
     public interface IDMItemRepo
     {
-        Task<List<DtoItem>> GetListe();
-        Task<List<DtoItem>> GetByType(string type);
-        Task<DtoItem> AddOrUpdate(DtoItem item);
+        Task<List<WebItem>> GetListe();
+        Task<List<WebItem>> GetByType(string type);
+        Task<WebItem> AddOrUpdate(WebItem item);
         Task<bool> Remove(int id);
     }
 }
