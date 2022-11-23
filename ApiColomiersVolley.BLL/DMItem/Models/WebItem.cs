@@ -27,5 +27,6 @@ namespace ApiColomiersVolley.BLL.DMItem.Models
         public int? IdParent { get; set; }
         public int? IdCategory { get; set; }
         public int? IdPost { get; set; }
+        public List<int>? IdPages { get; set; }
     }
 }

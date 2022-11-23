@@ -14,11 +14,13 @@ namespace ApiColomiersVolley.BLL.DMItem.Business
     {
         private readonly IConfiguration _config;
         private readonly IDMItemRepo _itemRepo;
+        private readonly IDMArticlePageRepo _articlePageRepo;
 
-        public BSItem(IConfiguration config, IDMItemRepo itemRepo)
+        public BSItem(IConfiguration config, IDMItemRepo itemRepo, IDMArticlePageRepo articlePageRepo)
         {
             _config = config;
             _itemRepo = itemRepo;
+            _articlePageRepo = articlePageRepo;
         }
 
         public async Task<IEnumerable<WebItem>> GetListe()
@@ -31,11 +33,21 @@ namespace ApiColomiersVolley.BLL.DMItem.Business
             var pages = await _itemRepo.GetByType("page");
             var posts = await _itemRepo.GetByType("post");
             var comments = await _itemRepo.GetByType("comment");
+
+            if (posts.Any())
+            {
+                foreach(var post in posts)
+                {
+                    var liaisons = await _articlePageRepo.GetByIdArticle(post.IdItem);
+                    post.IdPages = liaisons.Any() ? liaisons.Select(l => l.IdPage).ToList() : null;
+                }
+            }
+
             return new Tree()
             {
-                pages = pages.Any() ? pages : new List<WebItem>(),
-                posts = pages.Any() ? posts : new List<WebItem>(),
-                comments = pages.Any() ? comments : new List<WebItem>()
+                pages = pages.Any() ? pages.OrderBy(p => p.Order).ToList() : new List<WebItem>(),
+                posts = posts.Any() ? posts.OrderBy(p => p.Order).ToList() : new List<WebItem>(),
+                comments = comments.Any() ? comments.OrderBy(p => p.Order).ToList() : new List<WebItem>()
             };
         }
 

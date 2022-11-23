@@ -18,6 +18,7 @@ namespace ApiColomiersVolley.DAL
             services.AddScoped<IDMUserRepo, DPUser>();
             services.AddScoped<IDMConnexionRepo, DPConnexion>();
             services.AddScoped<IDMTokenRepo, DPToken>();
+            services.AddScoped<IDMArticlePageRepo, DPArticlePage>();
         }
     }
 }
