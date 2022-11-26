@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiColomiersVolley.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/[controller]")]
     public class WebItemController : ControllerBase
     {
         private readonly ILogger<WebItemController> _logger;
