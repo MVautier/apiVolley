@@ -5,16 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiColomiersVolley.Controllers
 {
+    /// <summary>
+    /// Traitement de tous les éléments HTML configurés pour l'application
+    /// </summary>
+    /// <response code="200">Success / Succès de la requête</response>
+    /// <response code="204">No content / Aucune donnée</response>
+    /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+    /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+    /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
     [ApiController]
     [Route("api/[controller]")]
     public class WebItemController : ControllerBase
     {
-        private readonly ILogger<WebItemController> _logger;
         private readonly IBSItem _bsItem;
 
-        public WebItemController(ILogger<WebItemController> logger, IBSItem bsItem)
+        /// <summary>
+        /// The class Constructor
+        public WebItemController(IBSItem bsItem)
         {
-            _logger = logger;
             _bsItem = bsItem;
         }
 

@@ -11,20 +11,21 @@ namespace ApiColomiersVolley.BLL.DMGallery.Business.Interfaces
 {
     public interface IBSGallery
     {
-        CKFinderInitResult GetCkfinderInit(string guidCompte);
-        CKFinderFoldersResult GetCkfinderFolders(string currentFolder, string guidCompte);
-        CKFinderFilesResult GetCkfinderFiles(string type, string currentFolder, string guidCompte);
-        FileStreamResult GetFile(string type, string currentFolder, string fileName, string size, string command, string guidCompte);
-        CKFinderImageInfo GetImageInfo(string type, string currentFolder, string fileName, string guidCompte);
-        Task<CKFinderUploadResult> UploadFile(IFormFileCollection files, CKFinderFolder folder);
-        CKFinderFolder FindFolder(string currentFolder, string guidCompte);
-        CKFinderRenameResult RenameFile(CKFinderFolder folder, string fileName, string newFileName);
-        CkFinderMoveFileResult MoveFile(IFormCollection form, CKFinderFolder folder, bool copy, string guidCompte);
+        CKFinderCreateFolderResult CreateFolder(CKFinderFolder folder, string newFolderName);
+        string CreateImageDirectory();
         CKFinderDeleteResult DeleteFiles(IFormCollection form, CKFinderFolder folder);
         CKFinderDeleteResult DeleteFolder(CKFinderFolder folder);
-        CKFinderCreateFolderResult CreateFolder(CKFinderFolder folder, string newFolderName);
+        CKFinderFolder FindFolder(string currentFolder);
+        CKFinderFilesResult GetCkfinderFiles(string type, string currentFolder);
+        CKFinderFoldersResult GetCkfinderFolders(string currentFolder);
+        CKFinderInitResult GetCkfinderInit();
+        FileStreamResult GetFile(string type, string currentFolder, string fileName, string size, string command);
+        CKFinderImageInfo GetImageInfo(string type, string currentFolder, string fileName);
+        CkFinderMoveFileResult MoveFile(IFormCollection form, CKFinderFolder folder, bool copy);
+        CKFinderRenameResult RenameFile(CKFinderFolder folder, string fileName, string newFileName);
         CKFinderSaveFileResult SaveFile(IFormCollection form, CKFinderFolder folder, string fileName);
-        CKFinderSelectFileResult SelectFile(string folder, string fileName, string guidCompte, int idCampagne);
-        string CreateImageDirectory(string guidCompte, int idCampagne);
+        CKFinderSelectFileResult SelectFile(string folder, string fileName);
+        Task<CKFinderUploadResult> UploadFile(IFormFileCollection files, CKFinderFolder folder);
+
     }
 }

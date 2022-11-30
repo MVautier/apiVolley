@@ -10,6 +10,8 @@ using ApiColomiersVolley.BLL.DMAuthentication.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAuthentication.Business;
 using ApiColomiersVolley.BLL.DMItem.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMItem.Business;
+using ApiColomiersVolley.BLL.DMGallery.Business.Interfaces;
+using ApiColomiersVolley.BLL.DMGallery.Business;
 
 namespace ApiColomiersVolley.BLL
 {
@@ -22,6 +24,7 @@ namespace ApiColomiersVolley.BLL
             services.AddScoped<IBSLogin, BSLogin>();
             services.AddScoped<IBSItem, BSItem>();
             services.AddScoped<IBSConnexion, BSConnexion>();
+            services.AddScoped<IBSGallery, BSGallery>();
 
             // Core tools
             services.AddScoped<IJWTFactory, JWTFactory>();

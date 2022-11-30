@@ -23,4 +23,9 @@
     <ProjectReference Include="..\ApiColomiersVolley.DAL\ApiColomiersVolley.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\medias\images\" />
+    <Folder Include="wwwroot\medias\thumbnail\" />
+  </ItemGroup>
+
 </Project>
