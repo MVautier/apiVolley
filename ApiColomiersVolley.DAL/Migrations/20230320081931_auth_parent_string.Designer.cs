@@ -3,14 +3,16 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20230320081931_auth_parent_string")]
+    partial class auth_parent_string
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,8 +123,8 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("tel");
 
-                    b.Property<string>("Photo")
-                        .HasColumnType("varchar(100)")
+                    b.Property<bool?>("Photo")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("photo");
 
                     b.Property<string>("PostalCode")

@@ -3,14 +3,16 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20230311230422_adherent_category")]
+    partial class adherent_category
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,8 +43,8 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("alert_phone");
 
-                    b.Property<string>("Authorization")
-                        .HasColumnType("varchar(200)")
+                    b.Property<bool?>("Authorization")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("autorisation_sortie");
 
                     b.Property<DateTime?>("BirthdayDate")
@@ -121,8 +123,8 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("tel");
 
-                    b.Property<string>("Photo")
-                        .HasColumnType("varchar(100)")
+                    b.Property<bool?>("Photo")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("photo");
 
                     b.Property<string>("PostalCode")

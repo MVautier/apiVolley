@@ -15,6 +15,9 @@ namespace ApiColomiersVolley.DAL
         public DbSet<Connexion> Connexions { get; set; }
         public DbSet<Token> Tokens { get; set; }
         public DbSet<ArticlePage> ArticlePages { get; set; }
+        public DbSet<Adherent> Adherents { get; set; }
+        public DbSet<Section> Sections { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public ColomiersVolleyContext()
         {

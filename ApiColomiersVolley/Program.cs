@@ -6,10 +6,10 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Net.Mime;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.InitLocator(builder.Configuration);
 builder.Services.AddControllers()
 

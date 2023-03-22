@@ -3,14 +3,16 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20230311082229_ajout_alert_fields")]
+    partial class ajout_alert_fields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,13 +43,18 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("alert_phone");
 
-                    b.Property<string>("Authorization")
-                        .HasColumnType("varchar(200)")
+                    b.Property<bool?>("Authorization")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("autorisation_sortie");
 
                     b.Property<DateTime?>("BirthdayDate")
                         .HasColumnType("datetime")
                         .HasColumnName("date_naissance");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("varchar(1)")
+                        .HasColumnName("categorie");
 
                     b.Property<DateTime?>("CertificateDate")
                         .HasColumnType("datetime")
@@ -77,11 +84,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("date_questionnaire");
 
-                    b.Property<int?>("IdCategory")
-                        .IsRequired()
-                        .HasColumnType("int")
-                        .HasColumnName("id_categorie");
-
                     b.Property<int?>("IdSection")
                         .IsRequired()
                         .HasColumnType("int")
@@ -100,9 +102,9 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("licence");
 
-                    b.Property<string>("MainSectionInfo")
+                    b.Property<string>("OtherSections")
                         .HasColumnType("varchar(500)")
-                        .HasColumnName("main_section_info");
+                        .HasColumnName("other_sections");
 
                     b.Property<string>("ParentPhone")
                         .HasColumnType("varchar(100)")
@@ -121,8 +123,8 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnName("tel");
 
-                    b.Property<string>("Photo")
-                        .HasColumnType("varchar(100)")
+                    b.Property<bool?>("Photo")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("photo");
 
                     b.Property<string>("PostalCode")
@@ -139,8 +141,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnName("equipe2");
 
                     b.HasKey("IdAdherent");
-
-                    b.HasIndex("IdCategory");
 
                     b.HasIndex("IdSection");
 
@@ -165,28 +165,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                     b.HasKey("IdArticlePage");
 
                     b.ToTable("article_page");
-                });
-
-            modelBuilder.Entity("ApiColomiersVolley.DAL.Entities.Category", b =>
-                {
-                    b.Property<int>("IdCategory")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("varchar(1)")
-                        .HasColumnName("code");
-
-                    b.Property<string>("Libelle")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("libelle");
-
-                    b.HasKey("IdCategory");
-
-                    b.ToTable("categorie");
                 });
 
             modelBuilder.Entity("ApiColomiersVolley.DAL.Entities.Connexion", b =>
@@ -396,19 +374,11 @@ namespace ApiColomiersVolley.DAL.Migrations
 
             modelBuilder.Entity("ApiColomiersVolley.DAL.Entities.Adherent", b =>
                 {
-                    b.HasOne("ApiColomiersVolley.DAL.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("IdCategory")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ApiColomiersVolley.DAL.Entities.Section", "Section")
                         .WithMany()
                         .HasForeignKey("IdSection")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("Section");
                 });
