@@ -10,7 +10,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools.Interfaces
 {
     public interface IFileManager
     {
-        PathConfig InitAdherentPaths(string nom, string prenom, string tel);
+        PathConfig InitAdherentPaths(string id);
         FileInfo[] FindFiles(string path);
         DateTime GetDateLastModified(string path);
         FileInfo[] FindFiles(string path, string nameStart);

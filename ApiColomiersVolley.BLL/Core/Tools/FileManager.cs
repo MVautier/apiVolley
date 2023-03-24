@@ -23,14 +23,14 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             _config = config;
         }
 
-        public PathConfig InitAdherentPaths(string nom, string prenom, string tel)
+        public PathConfig InitAdherentPaths(string id)
         {
             var basePath = _hostingEnvironment.WebRootPath;
             var paths = _config.GetSection("Paths");
             var baseUrl = paths.GetValue<string>("BaseUrl");
-            string dirname = GetDirName(nom, prenom, tel);
-            var adhBasePath = Path.Combine(basePath, paths.GetValue<string>("Adherent"), dirname);
-            var adhBaseUrl = Path.Combine(baseUrl, paths.GetValue<string>("Adherent"), dirname);
+            //string dirname = GetDirName(id);
+            var adhBasePath = Path.Combine(basePath, paths.GetValue<string>("Adherent"), id);
+            var adhBaseUrl = Path.Combine(baseUrl, paths.GetValue<string>("Adherent"), id);
             if (!Directory.Exists(adhBasePath))
             {
                 Directory.CreateDirectory(adhBasePath);
@@ -43,10 +43,10 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             };
         }
 
-        private string GetDirName(string nom, string prenom, string tel)
-        {
-            return (nom + "_" + prenom + "_" + tel).ToUpper().RemoveDiacritics();
-        }
+        //private string GetDirName(string id)
+        //{
+        //    return (nom + "_" + prenom + "_" + tel).ToUpper().RemoveDiacritics();
+        //}
 
         public FileInfo[] FindFiles(string path)
         {

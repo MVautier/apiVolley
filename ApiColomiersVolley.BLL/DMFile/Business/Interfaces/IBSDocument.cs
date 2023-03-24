@@ -9,6 +9,6 @@ namespace ApiColomiersVolley.BLL.DMFile.Business.Interfaces
 {
     public interface IBSDocument
     {
-        Task<string> SavePdf(string filename, IFormFile file);
+        Task<string> SavePdf(string filename, string id, IFormFile file);
     }
 }

@@ -19,11 +19,11 @@ namespace ApiColomiersVolley.BLL.DMFile.Business
             _fileManager = fileManager;
         }
 
-        public async Task<string> SavePdf(string filename, IFormFile file)
+        public async Task<string> SavePdf(string filename, string id, IFormFile file)
         {
-            var paths = _fileManager.InitAdherentPaths("nom", "prénom", "tél");
-            await _fileManager.CreateFile(Path.Combine(paths.BasePath, "test.pdf"), file);
-            return Path.Combine(paths.BaseUrl, "test.pdf");
+            var paths = _fileManager.InitAdherentPaths(id);
+            await _fileManager.CreateFile(Path.Combine(paths.BasePath, filename), file);
+            return Path.Combine(paths.BaseUrl, filename);
         }
     }
 }

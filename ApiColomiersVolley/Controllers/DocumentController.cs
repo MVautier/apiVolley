@@ -28,16 +28,16 @@ namespace ApiColomiersVolley.Controllers
         }
 
         [HttpPost("SavePDF")]
-        public async Task<ActionResult<string>> SavePDF([FromForm] string filename)
+        public async Task<ActionResult<string>> SavePDF([FromForm] string filename, [FromForm] string id)
         {
-            if (Request.Form.Files.Count < 1)
+            if (Request.Form.Files.Count < 1 || string.IsNullOrEmpty(filename) || string.IsNullOrEmpty(id))
             {
                 return BadRequest();
             }
 
             try
             {
-                return Ok(await _bsDocument.SavePdf("", Request.Form.Files.First()));
+                return Ok(await _bsDocument.SavePdf(filename, id, Request.Form.Files.First()));
             }
             catch (Exception ex)
             {
