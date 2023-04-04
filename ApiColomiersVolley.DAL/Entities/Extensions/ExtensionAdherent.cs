@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,15 +38,20 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 City = adherent.City,
                 Email = adherent.Email,
                 Payment = adherent.Payment,
+                PaymentComment = adherent.PaymentComment,
                 Photo = adherent.Photo,
                 Team1 = adherent.Team1,
                 Team2 = adherent.Team2,
                 Licence = adherent.Licence,
-                PaymentComment = adherent.PaymentComment,
-                MainSectionInfo = adherent.MainSectionInfo,
-                AlertLastName= adherent.AlertLastName,
+                AlertLastName = adherent.AlertLastName,
                 AlertFirstName = adherent.AlertFirstName,
-                AlertPhone = adherent.AlertPhone
+                AlertPhone = adherent.AlertPhone,
+                Saison = adherent.Saison,
+                Uid = adherent.Uid,
+                Sections = adherent.Sections,
+                Rgpd = adherent.Rgpd,
+                ImageRight = adherent.ImageRight,
+                Signature = adherent.Signature
             };
         }
 

@@ -55,14 +55,25 @@ namespace ApiColomiersVolley.DAL.Entities
         public string? Licence { get; set; }
         [Column("verif_paiement", TypeName = "varchar(100)")]
         public string? PaymentComment { get; set; }
-        [Column("main_section_info", TypeName = "varchar(500)")]
-        public string? MainSectionInfo { get; set; }
         [Column("alert_nom", TypeName = "varchar(100)")]
         public string? AlertLastName { get; set; }
         [Column("alert_prenom", TypeName = "varchar(100)")]
         public string? AlertFirstName { get; set; }
         [Column("alert_phone", TypeName = "varchar(20)")]
         public string? AlertPhone { get; set; }
+
+        [Column("saison")]
+        public int? Saison { get; set; }
+        [Column("uid", TypeName = "varchar(36)")]
+        public string? Uid { get; set; }
+        [Column("sections", TypeName = "varchar(400)")]
+        public string? Sections { get; set; }
+        [Column("rgpd")]
+        public bool? Rgpd { get; set; }
+        [Column("image_right")]
+        public bool? ImageRight { get; set; }
+        [Column("signature", TypeName = "varchar(100)")]
+        public string? Signature { get; set; }
 
         public virtual Section Section { get; set; }
         public virtual Category Category { get; set; }
