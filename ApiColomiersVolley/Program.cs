@@ -6,10 +6,10 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Net.Mime;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.InitLocator(builder.Configuration);
 builder.Services.AddControllers()
 
@@ -22,7 +22,7 @@ if (builder.Configuration.GetSection("FeatureActivation")?.GetValue<bool?>("enab
 {
     builder.Services.AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new() { Title = "ApiEasyFichiers", Version = "v1" });
+        c.SwaggerDoc("v1", new() { Title = "ApiColomiersVolley", Version = "v1" });
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
@@ -64,10 +64,15 @@ if (builder.Configuration.GetSection("FeatureActivation")?.GetValue<bool?>("enab
 //    healthQuery: "SELECT 1",
 //    name: "Sql Serveur",
 //    failureStatus: HealthStatus.Unhealthy);
+var apps = builder.Configuration.GetSection("Web").GetValue<string>("applications").Split(',');
 
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins(apps).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+}));
 var app = builder.Build();
 app.UseStaticFiles();
-app.UseCorsMiddleware();
+
 if (builder.Configuration.GetSection("FeatureActivation")?.GetValue<bool?>("enableSwagger") == true)
 {
     app.UseSwagger();
@@ -79,7 +84,9 @@ if (builder.Configuration.GetSection("FeatureActivation")?.GetValue<bool?>("enab
     });
 }
 
+//app.UseCorsMiddleware();
 
+app.UseCors("corsapp");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

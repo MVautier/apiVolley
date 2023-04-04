@@ -12,5 +12,7 @@ namespace ApiColomiersVolley.BLL.DMAuthentication.Models
         public int IdUser { get; set; }
         public string refresh_token { get; set; }
         public DateTime expire_in { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
     }
 }

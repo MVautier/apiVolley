@@ -17,9 +17,14 @@ namespace ApiColomiersVolley.DAL.Entities
         public string? Mail { get; set; }
         [Column("password", TypeName = "varchar(250)")]
         public string? Password { get; set; }
-        [Column("expireDate", TypeName = "varchar(250)")]
-        public DateTime? ExpireDate { get; set; }
-        [Column("admin", TypeName = "boolean")]
-        public bool? Admin { get; set; }
+        [Column("creationDate")]
+        public DateTime CreationDate { get; set; }
+        [Column("updateDate")]
+        public DateTime? UpdateDate { get; set; }
+        [Column("endDate")]
+        public DateTime? EndDate { get; set; }
+        [Column("role", TypeName = "varchar(50)")]
+        [Required]
+        public string Role { get; set; }
     }
 }
