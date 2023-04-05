@@ -64,12 +64,12 @@ if (builder.Configuration.GetSection("FeatureActivation")?.GetValue<bool?>("enab
 //    healthQuery: "SELECT 1",
 //    name: "Sql Serveur",
 //    failureStatus: HealthStatus.Unhealthy);
-var apps = builder.Configuration.GetSection("Web").GetValue<string>("applications").Split(',');
+//var apps = builder.Configuration.GetSection("Web").GetValue<string>("applications").Split(',');
 
-builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
-{
-    builder.WithOrigins(apps).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-}));
+//builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+//{
+//    builder.WithOrigins(apps).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+//}));
 var app = builder.Build();
 app.UseStaticFiles();
 
@@ -84,7 +84,7 @@ if (builder.Configuration.GetSection("FeatureActivation")?.GetValue<bool?>("enab
     });
 }
 
-//app.UseCorsMiddleware();
+app.UseCorsMiddleware();
 
 app.UseCors("corsapp");
 app.UseHttpsRedirection();
