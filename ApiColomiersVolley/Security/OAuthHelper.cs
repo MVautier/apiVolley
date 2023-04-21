@@ -67,5 +67,17 @@ namespace ApiColomiersVolley.Security
 
             return token;
         }
+
+        public bool IsAllowedOrigin(string origin)
+        {
+            var allowedOrigins = _config.GetSection("Web").GetValue<string>("applications").Split(',');
+            var originFound = allowedOrigins.FirstOrDefault(a => a == "*" || a == origin) ?? string.Empty;
+            if (!string.IsNullOrEmpty(originFound))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

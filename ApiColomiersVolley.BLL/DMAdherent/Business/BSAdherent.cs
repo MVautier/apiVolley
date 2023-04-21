@@ -37,5 +37,11 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
         {
             return await _adherentRepo.SearchAdherents(name, cp);
         }
+
+        public async Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent)
+        {
+
+            return adherent;
+        }
     }
 }

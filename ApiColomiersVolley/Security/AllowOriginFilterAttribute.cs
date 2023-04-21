@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApiColomiersVolley.Security.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ApiColomiersVolley.Security
@@ -16,27 +17,21 @@ namespace ApiColomiersVolley.Security
                 //    return;
                 //}
                 //IAuthClientAppsRepo authClientAppsRepo = context.HttpContext.RequestServices.GetService<IAuthClientAppsRepo>();
-                //if (!string.IsNullOrEmpty(origin))
-                //{
-                //    var clientAppSingleton = ClientAppSingleton.Instance;
-                //    if (!clientAppSingleton.clientApps.Any())
-                //    {
-                //        clientAppSingleton.clientApps = authClientAppsRepo.GetClientApps().GetAwaiter().GetResult().ToList();
-                //    }
-
-                //    if (!IsAllowedOrigin(clientAppSingleton.clientApps, origin))
-                //    {
-                //        if (context.HttpContext.Response.Headers.ContainsKey("Access-Control-Allow-Origin"))
-                //        {
-                //            context.HttpContext.Response.Headers["Access-Control-Allow-Origin"] = "Invalid origin";
-                //        }
-                //        else
-                //        {
-                //            context.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "Invalid origin");
-                //        }
-                //        throw new UnauthorizedAccessException("Origin");
-                //    }
-                //}
+                if (!string.IsNullOrEmpty(origin))
+                {
+                    if (!context.HttpContext.RequestServices.GetService<IOAuthHelper>().IsAllowedOrigin(origin))
+                    {
+                        if (context.HttpContext.Response.Headers.ContainsKey("Access-Control-Allow-Origin"))
+                        {
+                            context.HttpContext.Response.Headers["Access-Control-Allow-Origin"] = "Invalid origin";
+                        }
+                        else
+                        {
+                            context.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "Invalid origin");
+                        }
+                        throw new UnauthorizedAccessException("Origin");
+                    }
+                }
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -56,5 +51,7 @@ namespace ApiColomiersVolley.Security
             }
             base.OnActionExecuting(context);
         }
+
+        
     }
 }

@@ -14,5 +14,6 @@ namespace ApiColomiersVolley.BLL.DMAuthentication.Business.Interfaces
         Task<UserToken> RefreshUser(Refresh refresh, string ip);
         Task LogOutUser(string refreshId);
         Task<bool> CheckUserEmail(UserEmail userEmail);
+        Task<UserToken> LogInAnonymous(string clientId, string ip);
     }
 }

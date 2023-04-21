@@ -9,5 +9,6 @@ namespace ApiColomiersVolley.Security.Interfaces
         /// </summary>
         /// <returns></returns>
         UserInfo CreateUserInfosFromSecurityToken();
+        bool IsAllowedOrigin(string origin);
     }
 }

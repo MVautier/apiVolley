@@ -1,4 +1,5 @@
 ﻿using ApiColomiersVolley.BLL.DMAuthentication.Models;
+using ApiColomiersVolley.Controllers;
 using ApiColomiersVolley.Security;
 using ApiColomiersVolley.Security.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiColomiersVolley
 {
     [Exception]
-    public class ColomiersVolleyController : ControllerBase
+    public class ColomiersVolleyController : SecurityController
     {
         private UserInfo _user { get; set; }
 
@@ -22,5 +23,7 @@ namespace ApiColomiersVolley
                 return _user;
             }
         }
+
+
     }
 }

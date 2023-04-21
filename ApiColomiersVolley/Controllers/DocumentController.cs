@@ -44,5 +44,23 @@ namespace ApiColomiersVolley.Controllers
                 throw ex;
             }
         }
+
+        [HttpPost("SaveDocuments")]
+        public async Task<ActionResult<bool>> SaveDocuments([FromForm] string id)
+        {
+            if (Request.Form.Files.Count < 1 || string.IsNullOrEmpty(id))
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                return Ok(await _bsDocument.SaveDocuments(id, Request.Form.Files));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces
     {
         Task<IEnumerable<DtoAdherent>> GetListe();
         Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp);
+        Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent);
     }
 }

@@ -52,6 +52,27 @@ namespace ApiColomiersVolley.BLL.DMAuthentication.Business
             return await GenerateToken(userInfo, ip);
         }
 
+        public async Task<UserToken> LogInAnonymous(string clientId, string ip)
+        {
+            string verif = _config.GetSection("Web").GetValue<string> ("ClientId");
+            if (clientId != verif)
+            {
+                await LogInvalidConnexion(clientId, ip);
+                return null;
+            }
+
+            var userInfo = new UserInfo
+            {
+                IdUser = 0,
+                FirstName = "anonymous",
+                LastName = "anonymous",
+                Mail = "",
+                ExpireDate = DateTime.Now.AddHours(1),
+            };
+            await LogSuccessfulConnexion(userInfo.IdUser, ip);
+            return await GenerateToken(userInfo, ip);
+        }
+
         public async Task LogOutUser(string refreshId)
         {
             var hashRefresh = _encryption.GeneratePasswordHash(refreshId);

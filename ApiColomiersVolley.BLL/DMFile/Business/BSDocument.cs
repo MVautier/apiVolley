@@ -25,5 +25,25 @@ namespace ApiColomiersVolley.BLL.DMFile.Business
             await _fileManager.CreateFile(Path.Combine(paths.BasePath, filename), file);
             return Path.Combine(paths.BaseUrl, filename);
         }
+
+        public async Task<bool> SaveDocuments(string id, IFormFileCollection files)
+        {
+            try
+            {
+                var paths = _fileManager.InitAdherentPaths(id);
+                foreach (var file in files)
+                {
+                    await _fileManager.CreateFile(Path.Combine(paths.BasePath, file.FileName), file);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                return false;
+            }
+            
+        }
     }
 }
