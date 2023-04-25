@@ -1,4 +1,5 @@
-﻿using ApiColomiersVolley.BLL.DMAdherent.Business;
+﻿using ApiColomiersVolley.BLL.Core.Models.Generic;
+using ApiColomiersVolley.BLL.DMAdherent.Business;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Repositories
     {
         Task<IEnumerable<DtoAdherent>> GetAdherents();
         Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp);
+        Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting sorting, Pagination pagination);
     }
 }

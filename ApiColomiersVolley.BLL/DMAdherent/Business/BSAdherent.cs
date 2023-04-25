@@ -1,8 +1,10 @@
-﻿using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
+﻿using ApiColomiersVolley.BLL.Core.Models.Generic;
+using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Repositories;
 using ApiColomiersVolley.BLL.DMItem.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,11 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 results.Add(adherent);
             }
             return results;
+        }
+
+        public async Task<PagedList<DtoAdherent>> GetPagedListe(AdherentFilter filter, Sorting sort, Pagination pager)
+        {
+            return await _adherentRepo.GetPagedAdherents(filter, sort, pager);
         }
 
         public async Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp)

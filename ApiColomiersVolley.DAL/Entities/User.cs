@@ -23,8 +23,11 @@ namespace ApiColomiersVolley.DAL.Entities
         public DateTime? UpdateDate { get; set; }
         [Column("endDate")]
         public DateTime? EndDate { get; set; }
-        [Column("role", TypeName = "varchar(50)")]
+        [ForeignKey("Role")]
+        [Column("id_role")]
         [Required]
-        public string Role { get; set; }
+        public int IdRole { get; set; }
+
+        public virtual Role Role { get; set; }
     }
 }

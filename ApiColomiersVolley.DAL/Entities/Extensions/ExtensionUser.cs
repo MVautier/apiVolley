@@ -21,7 +21,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 IdUser = user.IdUser,
                 Nom = user.Nom,
                 Prenom = user.Prenom,
-                Role = user.Role,
+                Role = user.Role.Libelle,
                 Mail = user.Mail,
                 Password = user.Password,
                 CreationDate = user.CreationDate,
@@ -48,7 +48,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 LastName = user.Nom,
                 FirstName = user.Prenom,
                 Mail = user.Mail,
-                ExpireDate = user.EndDate
+                ExpireDate = user.EndDate,
+                Role = user.Role.Libelle,
             };
         }
     }

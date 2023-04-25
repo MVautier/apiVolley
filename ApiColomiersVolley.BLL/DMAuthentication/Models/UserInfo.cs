@@ -13,5 +13,6 @@ namespace ApiColomiersVolley.BLL.DMAuthentication.Models
         public string LastName { get; set; }
         public string Mail { get; set; }
         public DateTime? ExpireDate { get; set; }
+        public string Role { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
+﻿using ApiColomiersVolley.BLL.Core.Models.Generic;
+using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
 using ApiColomiersVolley.BLL.DMItem.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMItem.Models;
@@ -42,6 +43,38 @@ namespace ApiColomiersVolley.Controllers
         public async Task<IEnumerable<DtoAdherent>> Get()
         {
             return await _bsAdherent.GetListe();
+        }
+
+        /// <summary>
+        /// Gets a paged adherents list
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterColumn"></param>
+        /// <param name="filterOperator"></param>
+        /// <param name="sort"></param>
+        /// <param name="sortColumn"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpPost]
+        [Route("paged")]
+        public async Task<PagedList<DtoAdherent>> GetPaged(
+            [FromBody] AdherentFilter filter,
+            [FromQuery] string? sort = null, 
+            [FromQuery] string? sortColumn = null,
+            [FromQuery] int page = 0, 
+            [FromQuery] int size = 10)
+        {
+            var pagination = new Pagination { Page = page, Size = size };
+            var sorting = new Sorting { Field = sortColumn, OrderAsc = sort == "asc" };
+            return await _bsAdherent.GetPagedListe(filter, sorting, pagination);
         }
 
         /// <summary>

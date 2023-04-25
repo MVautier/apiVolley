@@ -21,7 +21,7 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
         private IQueryable<Entities.User> GetAll()
         {
-            return _db.Users;
+            return _db.Users.Include(u => u.Role);
         }
 
         public async Task<List<DtoUser>> Get()
