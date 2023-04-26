@@ -39,11 +39,16 @@ namespace ApiColomiersVolley.DAL.DataProviders
             return (await GetAll().Where(a => a.LastName.ToLower() == name.ToLower() && a.PostalCode == cp).ToListAsync()).ToDtoAdherent();
         }
 
-        public async Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting sorting, Pagination pagination)
+        public async Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting? sorting, Pagination? pagination)
         {
             var adherents = GetFilteredAdherents(filter);
-            adherents = SortData(adherents, sorting);
-            var paginated = pagination.Paginate(adherents);
+            
+            if (sorting != null)
+            {
+                adherents = SortData(adherents, sorting);
+            }
+
+            IQueryable<Adherent> paginated = pagination != null ? pagination.Paginate(adherents) : adherents;
             return new PagedList<DtoAdherent>(paginated.ToDtoAdherent().ToList(), adherents.Count());
         }
 
@@ -115,9 +120,9 @@ namespace ApiColomiersVolley.DAL.DataProviders
         private Func<AdherentFilter, Expression<Func<Adherent, bool>>> ApplyFilters
            => (filters)
                => (adherent)
-                    => (!filters.HasPhoto.HasValue || !string.IsNullOrEmpty(adherent.Photo))
+                    => (!filters.HasPhoto.HasValue || (filters.HasPhoto.HasValue && filters.HasPhoto.Value ? !string.IsNullOrEmpty(adherent.Photo) : string.IsNullOrEmpty(adherent.Photo)))
                         &&
-                        (!filters.HasLicence.HasValue || !string.IsNullOrEmpty(adherent.Licence))
+                        (!filters.HasLicence.HasValue || (filters.HasLicence.HasValue && filters.HasLicence.Value ? !string.IsNullOrEmpty(adherent.Licence) : string.IsNullOrEmpty(adherent.Licence)))
                         &&
                         (!filters.IdSection.HasValue || adherent.IdSection == filters.IdSection)
                         &&

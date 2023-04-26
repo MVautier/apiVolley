@@ -1,5 +1,7 @@
 ﻿using ApiColomiersVolley.BLL.DMAuthentication.Models;
 using ApiColomiersVolley.BLL.DMAuthentication.Repositories;
+using ApiColomiersVolley.BLL.DMUser.Models;
+using ApiColomiersVolley.BLL.DMUser.Repositories;
 using ApiColomiersVolley.DAL.Entities.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ApiColomiersVolley.DAL.DataProviders
 {
-    public class DPUser : IDMUserRepo
+    public class DPUser : IDMUserRepo, IDMUser
     {
         private ColomiersVolleyContext _db { get; set; }
 
@@ -42,6 +44,11 @@ namespace ApiColomiersVolley.DAL.DataProviders
         public async Task<DtoUser> Authenticate(string mail, string password)
         {
             return (await GetAll().FirstOrDefaultAsync(u => u.Mail.ToLower() == mail.ToLower() && u.Password == password)).ToDtoUser();
+        }
+
+        public async Task<IEnumerable<DtoUserRole>> GetListe()
+        {
+            return (await GetAll().ToListAsync()).ToDtoUserRole();
         }
 
         public async Task<UserInfo> GetConnectingUser(Login login)

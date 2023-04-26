@@ -24,5 +24,6 @@ namespace ApiColomiersVolley.BLL.Core.Tools.Interfaces
         Task CreateFile(string fullName, IFormFile file);
         void CreateFolder(string path);
         void CleanFolder(string path);
+        Task<byte[]> CreateExcelFile<T>(List<T> list, string fileName, string sheetName);
     }
 }

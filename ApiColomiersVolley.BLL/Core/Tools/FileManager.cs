@@ -1,12 +1,15 @@
 ﻿using ApiColomiersVolley.BLL.Core.Tools.Extensions;
 using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools.Models;
+using Cartegie.BLL.CreationDeFichiers.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,11 +19,13 @@ namespace ApiColomiersVolley.BLL.Core.Tools
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IConfiguration _config;
+        private readonly IFileExport _fileExport;
 
-        public FileManager(IHostingEnvironment hostingEnvironment, IConfiguration config)
+        public FileManager(IHostingEnvironment hostingEnvironment, IConfiguration config, IFileExport fileExport)
         {
             _hostingEnvironment = hostingEnvironment;
             _config = config;
+            _fileExport = fileExport;
         }
 
         public PathConfig InitAdherentPaths(string id)
@@ -162,5 +167,41 @@ namespace ApiColomiersVolley.BLL.Core.Tools
                 files.ForEach(f => DeleteFile(f));
             }
         }
+
+        public async Task<byte[]> CreateExcelFile<T>(List<T> list, string fileName, string sheetName)
+        {
+            var dataTable = ToDataTable(list);
+            byte[] excelFileBytes;
+            try
+            {
+                excelFileBytes = await _fileExport.CreateFileWithSheets(fileName + ".xlsx", new DataTable[] { dataTable }, new string[] { sheetName });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return excelFileBytes;
+        }
+
+        private DataTable ToDataTable<T>(List<T> items)
+        {
+            DataTable dataTable = new DataTable(typeof(T).Name);
+            PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo prop in Props)
+            {
+                dataTable.Columns.Add(prop.Name);
+            }
+            foreach (T item in items)
+            {
+                var values = new object[Props.Length];
+                for (int i = 0; i < Props.Length; i++)
+                {
+                    values[i] = Props[i].GetValue(item, null);
+                }
+                dataTable.Rows.Add(values);
+            }
+            return dataTable;
+        }
+
     }
 }

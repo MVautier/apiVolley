@@ -11,6 +11,10 @@ using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Business;
 using ApiColomiersVolley.BLL.DMFile.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMFile.Business;
+using Cartegie.BLL.CreationDeFichiers.Interface;
+using Cartegie.BLL.CreationDeFichiers;
+using ApiColomiersVolley.BLL.DMUser.Business.Interfaces;
+using ApiColomiersVolley.BLL.DMUser.Business;
 
 namespace ApiColomiersVolley.BLL
 {
@@ -27,12 +31,15 @@ namespace ApiColomiersVolley.BLL
             services.AddScoped<IBSAdherent, BSAdherent>();
             services.AddScoped<IBSCategory, BSCategory>();
             services.AddScoped<IBSDocument, BSDocument>();
+            services.AddScoped<IBSUser, BSUser>();
+            services.AddScoped<IBSRole, BSRole>();
 
             // Core tools
             services.AddScoped<IJWTFactory, JWTFactory>();
             services.AddScoped<IServiceSendMail, SendMail>();
             services.AddScoped<IEncryption, Encryption>();
             services.AddScoped<IFileManager, FileManager>();
+            services.AddScoped<IFileExport, FileExport>();
         }
     }
 }

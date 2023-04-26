@@ -14,6 +14,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Repositories
     {
         Task<IEnumerable<DtoAdherent>> GetAdherents();
         Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp);
-        Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting sorting, Pagination pagination);
+        Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting? sorting, Pagination? pagination);
     }
 }

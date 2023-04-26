@@ -1,4 +1,5 @@
 ﻿using ApiColomiersVolley.BLL.Core.Models.Generic;
+using ApiColomiersVolley.BLL.Core.Tools.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces
         Task<PagedList<DtoAdherent>> GetPagedListe(AdherentFilter filter, Sorting sort, Pagination pager);
         Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp);
         Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent);
+        Task<FileModel> GetExcelFile(AdherentFilter filter);
     }
 }
