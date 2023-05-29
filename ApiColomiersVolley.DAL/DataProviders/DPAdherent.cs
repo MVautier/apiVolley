@@ -34,6 +34,11 @@ namespace ApiColomiersVolley.DAL.DataProviders
             return (await GetAll().ToListAsync()).ToDtoAdherent();
         }
 
+        public async Task<IEnumerable<DtoAdherent>> GetAdherentsByCategoryAndSeason(int idCategory, int year)
+        {
+            return (await GetAll().Where(a => a.IdCategory == idCategory && a.Saison == year).ToListAsync()).ToDtoAdherent();
+        }
+
         public async Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp)
         {
             return (await GetAll().Where(a => a.LastName.ToLower() == name.ToLower() && a.PostalCode == cp).ToListAsync()).ToDtoAdherent();

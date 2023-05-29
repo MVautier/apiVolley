@@ -68,6 +68,8 @@ namespace ApiColomiersVolley.DAL.Entities
         public string? Uid { get; set; }
         [Column("sections", TypeName = "varchar(400)")]
         public string? Sections { get; set; }
+        [Column("verif_c3l", TypeName = "varchar(500)")]
+        public string? VerifC3L { get; set; }
         [Column("rgpd")]
         public bool? Rgpd { get; set; }
         [Column("image_right")]
