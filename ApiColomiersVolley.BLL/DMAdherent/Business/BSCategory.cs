@@ -33,7 +33,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 int nbMax = _config.GetValue<int>("nbAdoMax");
                 if (ados.Count() > nbMax)
                 {
-                    categs.Remove(categs.First(c => c.IdCategory == 3));
+                    categs.First(c => c.IdCategory == 3).Blocked = true;
                 }
             }
             return categs;

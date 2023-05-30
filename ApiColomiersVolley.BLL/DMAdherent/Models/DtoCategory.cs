@@ -11,5 +11,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public int IdCategory { get; set; }
         public string? Code { get; set; }
         public string? Libelle { get; set; }
+        public bool? Blocked { get; set; }
     }
 }

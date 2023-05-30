@@ -20,7 +20,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             {
                 IdCategory = categ.IdCategory,
                 Code = categ.Code,
-                Libelle = categ.Libelle
+                Libelle = categ.Libelle,
+                Blocked = false
             };
         }
 
