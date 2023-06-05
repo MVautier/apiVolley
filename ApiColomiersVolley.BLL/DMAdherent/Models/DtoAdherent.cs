@@ -29,9 +29,9 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public string? Photo { get; set; }
         public string? Licence { get; set; }
         public List<DtoAdherent> Membres { get; set; }
-        public string? AlertLastName { get; set; }
-        public string? AlertFirstName { get; set; }
-        public string? AlertPhone { get; set; }
+        public string? Alert1 { get; set; }
+        public string? Alert2 { get; set; }
+        public string? Alert3 { get; set; }
         public string? Uid { get; set; }
         public List<string>? Sections { get; set; }
         public bool? Rgpd { get; set; }

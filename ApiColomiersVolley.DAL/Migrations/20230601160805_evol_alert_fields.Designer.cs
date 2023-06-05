@@ -3,14 +3,16 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20230601160805_evol_alert_fields")]
+    partial class evol_alert_fields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
