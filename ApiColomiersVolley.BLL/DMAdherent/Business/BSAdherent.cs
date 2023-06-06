@@ -18,12 +18,14 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
     public class BSAdherent : IBSAdherent
     {
         private readonly IDMAdherentRepo _adherentRepo;
+        private readonly IDMOrderRepo _orderRepo;
         private readonly IFileManager _fileManager;
 
-        public BSAdherent(IDMAdherentRepo adherentRepo, IFileManager fileManager)
+        public BSAdherent(IDMAdherentRepo adherentRepo, IFileManager fileManager, IDMOrderRepo orderRepo)
         {
             _adherentRepo = adherentRepo;
             _fileManager = fileManager;
+            _orderRepo = orderRepo;
         }
 
         public async Task<IEnumerable<DtoAdherent>> GetListe()
@@ -50,8 +52,30 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
 
         public async Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent)
         {
+            DtoAdherent result = await _adherentRepo.AddOrUpdate(adherent);
+            if (result != null) 
+            {
+                if (adherent.Membres.Any())
+                {
+                    foreach (DtoAdherent membre in adherent.Membres)
+                    {
+                        membre.IdParent = result.IdAdherent;
+                        await _adherentRepo.AddOrUpdate(membre);
+                    }
+                }
 
-            return adherent;
+                if (adherent.Order != null)
+                {
+                    if (adherent.Order.IdAdherent == 0)
+                    {
+                        adherent.Order.IdAdherent = result.IdAdherent;
+                    }
+
+                    await _orderRepo.AddOrUpdate(adherent.Order);
+                }
+            }
+
+            return result;
         }
 
         public async Task<FileModel> GetExcelFile(AdherentFilter filter)

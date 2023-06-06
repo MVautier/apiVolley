@@ -26,6 +26,7 @@ namespace ApiColomiersVolley.DAL
             services.AddScoped<IDMSectionRepo, DPSection>();
             services.AddScoped<IDMCategoryRepo, DPCategory>();
             services.AddScoped<IDMRoleRepo, DPRole>();
+            services.AddScoped<IDMOrderRepo, DPOrder>();
         }
     }
 }

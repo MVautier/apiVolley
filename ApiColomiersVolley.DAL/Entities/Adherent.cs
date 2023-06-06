@@ -9,6 +9,8 @@ namespace ApiColomiersVolley.DAL.Entities
         [Key]
         [Column("id")]
         public int IdAdherent { get; set; }
+        [Column("id_parent")]
+        public int? IdParent { get; set; }
         [ForeignKey("Section")]
         [Column("id_section")]
         public int? IdSection { get; set; }

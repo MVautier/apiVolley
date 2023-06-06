@@ -10,6 +10,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
     public class DtoAdherent
     {
         public int IdAdherent { get; set; }
+        public int? IdParent { get; set; }
         public string? Section { get; set; } // filled on insert/update
         public string Category { get; set; } // filled on insert/update
         public string? Authorization { get; set; }
@@ -37,6 +38,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public bool? Rgpd { get; set; }
         public bool? ImageRight { get; set; }
         public string? Signature { get; set; }
+        public DtoOrder? Order { get; set; }
 
         // Champs saisis par l'admin
         public int? Saison { get; set; }
@@ -45,5 +47,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public string? PaymentComment { get; set; }
         public DateTime? CertificateDate { get; set; }
         public string? Payment { get; set; }
+        
     }
 }

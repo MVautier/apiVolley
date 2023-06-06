@@ -44,6 +44,35 @@ namespace ApiColomiersVolley.DAL.DataProviders
             return (await GetAll().Where(a => a.LastName.ToLower() == name.ToLower() && a.PostalCode == cp).ToListAsync()).ToDtoAdherent();
         }
 
+        public async Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent)
+        {
+            Adherent adh = null;
+            if (adherent.IdAdherent > 0)
+            {
+                adh = await GetAll().FirstOrDefaultAsync(a => a.IdAdherent == adherent.IdAdherent);
+                if (adh != null)
+                {
+                    adh = adherent.ToAdherent(adh);
+                    await _db.SaveChangesAsync();
+                    return adherent;
+                }
+
+                return null;
+            }
+            else
+            {
+                var newAdh = await _db.AddAsync(adherent.ToAdherentAdd());
+                await _db.SaveChangesAsync();
+                if (newAdh != null)
+                {
+                    adherent.IdAdherent = newAdh.Entity.IdAdherent;
+                    return adherent;
+                }
+
+                return null;
+            }
+        }
+
         public async Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting? sorting, Pagination? pagination)
         {
             var adherents = GetFilteredAdherents(filter);

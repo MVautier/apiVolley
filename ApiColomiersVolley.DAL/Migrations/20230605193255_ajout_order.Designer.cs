@@ -3,14 +3,16 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20230605193255_ajout_order")]
+    partial class ajout_order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,10 +83,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("id_categorie");
-
-                    b.Property<int?>("IdParent")
-                        .HasColumnType("int")
-                        .HasColumnName("id_parent");
 
                     b.Property<int?>("IdSection")
                         .IsRequired()
@@ -378,14 +376,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("date");
 
-                    b.Property<DateTime?>("DateNaissance")
-                        .HasColumnType("datetime")
-                        .HasColumnName("date_naissance");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text")
-                        .HasColumnName("email");
-
                     b.Property<int>("IdAdherent")
                         .HasColumnType("int")
                         .HasColumnName("id_adherent");
@@ -393,14 +383,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                     b.Property<int>("IdPaiement")
                         .HasColumnType("int")
                         .HasColumnName("id_paiement");
-
-                    b.Property<string>("Nom")
-                        .HasColumnType("text")
-                        .HasColumnName("nom");
-
-                    b.Property<string>("Prenom")
-                        .HasColumnType("text")
-                        .HasColumnName("prennom");
 
                     b.Property<int?>("Total")
                         .HasColumnType("int")
