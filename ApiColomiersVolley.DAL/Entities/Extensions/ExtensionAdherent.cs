@@ -173,7 +173,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 LastName = adherent.LastName,
                 Genre = adherent.Genre,
                 BirthdayDate = adherent.BirthdayDate,
-                InscriptionDate = adherent.InscriptionDate,
+                InscriptionDate = DateTime.Now,
                 HealthStatementDate = adherent.HealthStatementDate,
                 CertificateDate = adherent.CertificateDate,
                 Phone = adherent.Phone,
