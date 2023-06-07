@@ -28,7 +28,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             _fileExport = fileExport;
         }
 
-        public PathConfig InitAdherentPaths(string id)
+        public PathConfig InitAdherentPaths(string id, bool createDefault = true)
         {
             var basePath = _hostingEnvironment.WebRootPath;
             var paths = _config.GetSection("Paths");
@@ -36,7 +36,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             //string dirname = GetDirName(id);
             var adhBasePath = Path.Combine(basePath, paths.GetValue<string>("Adherent"), id);
             var adhBaseUrl = Path.Combine(baseUrl, paths.GetValue<string>("Adherent"), id);
-            if (!Directory.Exists(adhBasePath))
+            if (!Directory.Exists(adhBasePath) && createDefault)
             {
                 Directory.CreateDirectory(adhBasePath);
             }
@@ -55,8 +55,18 @@ namespace ApiColomiersVolley.BLL.Core.Tools
 
         public FileInfo[] FindFiles(string path)
         {
+            if (!Directory.Exists(path))
+            {
+                return null;
+            }
+
             var directory = new DirectoryInfo(path);
             return directory.GetFiles();
+        }
+
+        public string GetTypeByName(string name)
+        {
+            return name.Contains("photo") ? "photo" : name.Contains("certificat") ? "certificat" : name.Contains("attestation") ? "attestation" : name.Contains("adhesion") ? "adhesion" : "";
         }
 
         public DateTime GetDateLastModified(string path)

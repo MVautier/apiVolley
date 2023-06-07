@@ -10,7 +10,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools.Interfaces
 {
     public interface IFileManager
     {
-        PathConfig InitAdherentPaths(string id);
+        PathConfig InitAdherentPaths(string id, bool createDefault = true);
         FileInfo[] FindFiles(string path);
         DateTime GetDateLastModified(string path);
         FileInfo[] FindFiles(string path, string nameStart);
@@ -25,5 +25,6 @@ namespace ApiColomiersVolley.BLL.Core.Tools.Interfaces
         void CreateFolder(string path);
         void CleanFolder(string path);
         Task<byte[]> CreateExcelFile<T>(List<T> list, string fileName, string sheetName);
+        string GetTypeByName(string name);
     }
 }

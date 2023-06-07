@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,7 +43,46 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
 
         public async Task<PagedList<DtoAdherent>> GetPagedListe(AdherentFilter filter, Sorting sort, Pagination pager)
         {
-            return await _adherentRepo.GetPagedAdherents(filter, sort, pager);
+            var result = await _adherentRepo.GetPagedAdherents(filter, sort, pager);
+            if (result.Count > 0 && result.Datas.Any())
+            {
+                List<DtoAdherent> adherents = new List<DtoAdherent>();
+                foreach(var adherent in result.Datas)
+                {
+                    List<DtoDocument> docs = new List<DtoDocument>();
+                    if (adherent.Uid != null)
+                    {
+                        var paths = _fileManager.InitAdherentPaths(adherent.Uid, false);
+                        var files = _fileManager.FindFiles(paths.BasePath);
+                        if (files != null && files.Any())
+                        {
+                            foreach ( var file in files)
+                            {
+                                docs.Add(new DtoDocument
+                                {
+                                    filename = Path.Combine(file.DirectoryName, file.Name),
+                                    type = _fileManager.GetTypeByName(file.Name),
+                                    blob = null,
+                                    sent = true
+                                });
+                            }
+                        }
+                    }
+
+                    adherent.Documents = docs;
+                    var orders = await _orderRepo.GetByAdherent(adherent.IdAdherent);
+                    if (orders.Any())
+                    {
+                        adherent.Order = orders.OrderByDescending(o => o.Date).FirstOrDefault();
+                    }
+                    
+                    adherents.Add(adherent);
+                }
+
+                result = new PagedList<DtoAdherent>(adherents, result.Count);
+            }
+
+            return result;
         }
 
         public async Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp)

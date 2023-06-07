@@ -38,6 +38,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public bool? Rgpd { get; set; }
         public bool? ImageRight { get; set; }
         public string? Signature { get; set; }
+        public List<DtoDocument>? Documents { get; set; }
         public DtoOrder? Order { get; set; }
 
         // Champs saisis par l'admin
