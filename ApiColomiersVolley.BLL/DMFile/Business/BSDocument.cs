@@ -1,7 +1,9 @@
 ﻿using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
+using ApiColomiersVolley.BLL.Core.Tools.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Repositories;
 using ApiColomiersVolley.BLL.DMFile.Business.Interfaces;
 using Microsoft.AspNetCore.Http;
+using NPOI.OpenXml4Net.OPC.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,12 @@ namespace ApiColomiersVolley.BLL.DMFile.Business
         public BSDocument(IFileManager fileManager)
         {
             _fileManager = fileManager;
+        }
+
+        public async Task<FileModel> DownloadFile(string fileName, string uid)
+        {
+            var fileModel = await _fileManager.GetFile(fileName, uid);
+            return fileModel;
         }
 
         public async Task<string> SavePdf(string filename, string id, IFormFile file)

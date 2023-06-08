@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ApiColomiersVolley.BLL.Core.Tools.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace ApiColomiersVolley.BLL.DMFile.Business.Interfaces
     {
         Task<string> SavePdf(string filename, string id, IFormFile file);
         Task<bool> SaveDocuments(string id, IFormFileCollection files);
+        Task<FileModel> DownloadFile(string fileName, string uid);
     }
 }

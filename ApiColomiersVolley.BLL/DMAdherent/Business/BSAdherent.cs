@@ -60,7 +60,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                             {
                                 docs.Add(new DtoDocument
                                 {
-                                    filename = Path.Combine(file.DirectoryName, file.Name),
+                                    filename = file.Name,
                                     type = _fileManager.GetTypeByName(file.Name),
                                     blob = null,
                                     sent = true

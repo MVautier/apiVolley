@@ -27,6 +27,24 @@ namespace ApiColomiersVolley.Controllers
             _bsDocument = bsDocument;
         }
 
+        /// <summary>
+        /// Get the quote file
+        /// </summary>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        /// <returns>Return the file of the quote</returns>
+        [HttpGet]
+        [Route("download/{fileName}")]
+        public async Task<ActionResult> DownloadQuoteFile(string fileName, [FromQuery] string uid)
+        {
+            var file = await _bsDocument.DownloadFile(fileName, uid);
+            return File(file.Content, file.Type, file.Name);
+
+        }
+
         [HttpPost("SavePDF")]
         public async Task<ActionResult<string>> SavePDF([FromForm] string filename, [FromForm] string id)
         {

@@ -4,6 +4,7 @@ using ApiColomiersVolley.BLL.Core.Tools.Models;
 using Cartegie.BLL.CreationDeFichiers.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -85,6 +86,24 @@ namespace ApiColomiersVolley.BLL.Core.Tools
         {
             var directory = new DirectoryInfo(path);
             return directory.GetFiles(nameStart + "*." + extension);
+        }
+
+        public async Task<FileModel> GetFile(string filename, string uid)
+        {
+            var config = InitAdherentPaths(uid, false);
+            string path = Path.Combine(config.BasePath, filename);
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                throw new System.IO.FileNotFoundException(path);
+            }
+            var provider = new FileExtensionContentTypeProvider();
+            string contentType;
+            if (!provider.TryGetContentType(path, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            var bytes = await File.ReadAllBytesAsync(path);
+            return new FileModel(Path.GetFileName(path), bytes, contentType);
         }
 
         public async Task<string[]> ReadFile(FileInfo file)
