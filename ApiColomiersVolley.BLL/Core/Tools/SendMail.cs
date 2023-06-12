@@ -64,6 +64,16 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             await Send(from, to, null, body, subject);
         }
 
+        public async Task SendMailSimple(string title = "", string message = "")
+        {
+            var mailConf = _config.GetSection("MailSettings");
+            var from = new MailAddress(mailConf.GetValue<string>("EmailFrom"));
+            var to = new List<string> { mailConf.GetValue<string>("EmailInfoTo") };
+            var subject = "[" + mailConf.GetValue<string>("ModeTravail") + "] [INFO] " + mailConf.GetValue<string>("TypeRobot");
+            var body = CreateHtmlMessage(title, message);
+            await Send(from, to, null, body, subject);
+        }
+
         public async Task SendMailUser(MailOrder content, string mailParameters = null, List<MailFile> files = null)
         {
             var parameters = PrepareConfig(mailParameters);
@@ -208,6 +218,22 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             }
 
             body += RecurciveInnerException(ex) + "</body></html>";
+            return body;
+        }
+
+        private string CreateHtmlMessage(string title = "", string message = "")
+        {
+            var body = "<html><body>";
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                body += "<h2>" + title + "</h2>";
+            }
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                body += "<p>" + message + "</p>";
+            }
+
+            body += "</body></html>";
             return body;
         }
 

@@ -7,6 +7,7 @@ using ApiColomiersVolley.BLL.DMAdherent.Repositories;
 using ApiColomiersVolley.BLL.DMItem.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,14 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
         private readonly IDMAdherentRepo _adherentRepo;
         private readonly IDMOrderRepo _orderRepo;
         private readonly IFileManager _fileManager;
+        private readonly IServiceSendMail _mailManager;
 
-        public BSAdherent(IDMAdherentRepo adherentRepo, IFileManager fileManager, IDMOrderRepo orderRepo)
+        public BSAdherent(IDMAdherentRepo adherentRepo, IFileManager fileManager, IDMOrderRepo orderRepo, IServiceSendMail mailManager)
         {
             _adherentRepo = adherentRepo;
             _fileManager = fileManager;
             _orderRepo = orderRepo;
+            _mailManager = mailManager;
         }
 
         public async Task<IEnumerable<DtoAdherent>> GetListe()
@@ -115,6 +118,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 }
             }
 
+            await SendMailInfo(result);
+
             return result;
         }
 
@@ -131,6 +136,20 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             }
 
             throw new ArgumentNullException("Aucun compte n'a été trouvé");
+        }
+
+        private async Task SendMailInfo(DtoAdherent adherent)
+        {
+            try
+            {
+                string title = "Adherent was saved";
+                string content = JsonConvert.SerializeObject(adherent);
+                await _mailManager.SendMailSimple(title, content);
+            }
+            catch (Exception)
+            {
+
+            }
         }
     }
 }
