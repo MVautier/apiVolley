@@ -68,7 +68,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools
         {
             var mailConf = _config.GetSection("MailSettings");
             var from = new MailAddress(mailConf.GetValue<string>("EmailFrom"));
-            var to = new List<string> { mailConf.GetValue<string>("EmailInfoTo") };
+            var to = new List<string> { mailConf.GetValue<string>("EmailTo") };
             var subject = "[" + mailConf.GetValue<string>("ModeTravail") + "] [INFO] " + mailConf.GetValue<string>("TypeRobot");
             var body = CreateHtmlMessage(title, message);
             await Send(from, to, null, body, subject);

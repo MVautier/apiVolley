@@ -1,4 +1,5 @@
-﻿using ApiColomiersVolley.BLL.DMAdherent.Business;
+﻿using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
+using ApiColomiersVolley.BLL.DMAdherent.Business;
 using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
 using ApiColomiersVolley.BLL.DMUser.Business.Interfaces;
@@ -13,13 +14,15 @@ namespace ApiColomiersVolley.Controllers
     {
         private readonly IBSUser _bsUser;
         private readonly IBSRole _bsRole;
+        private readonly IServiceSendMail _mailManager;
 
         /// <summary>
         /// The class Constructor
-        public UserController(IBSUser bsUser, IBSRole bsRole)
+        public UserController(IBSUser bsUser, IBSRole bsRole, IServiceSendMail mailManager)
         {
             _bsUser = bsUser;
             _bsRole = bsRole;
+            _mailManager = mailManager;
         }
 
         /// <summary>
@@ -33,6 +36,15 @@ namespace ApiColomiersVolley.Controllers
         [HttpGet]
         public async Task<IEnumerable<DtoUserRole>> Get()
         {
+            try
+            {
+                await _mailManager.SendMailSimple("Admin logged", "Call made to get Users List");
+            }
+            catch (Exception)
+            {
+
+            }
+            
             return await _bsUser.GetListe();
         }
 
