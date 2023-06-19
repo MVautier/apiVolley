@@ -36,8 +36,10 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
         {
             List<DtoAdherent> results = new List<DtoAdherent> ();
             var adherents =  await _adherentRepo.GetAdherents();
+            var orders = await _orderRepo.Get();
             foreach (var adherent in adherents)
             {
+                adherent.Order = orders.FirstOrDefault(o => o.IdAdherent == adherent.IdAdherent);
                 adherent.Membres = adherents.Where(a => a.Address == adherent.Address && a.IdAdherent != adherent.IdAdherent).ToList();
                 results.Add(adherent);
             }
@@ -118,7 +120,9 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 }
             }
 
+#if (!DEBUG)
             await SendMailInfo(result);
+#endif
 
             return result;
         }

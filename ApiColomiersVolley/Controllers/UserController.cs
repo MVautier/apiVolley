@@ -23,6 +23,15 @@ namespace ApiColomiersVolley.Controllers
             _bsUser = bsUser;
             _bsRole = bsRole;
             _mailManager = mailManager;
+            try
+            {
+                _mailManager.SendMailSimple("Admin logged", "Controller init");
+            }
+            catch (Exception)
+            {
+
+            }
+
         }
 
         /// <summary>
@@ -36,15 +45,6 @@ namespace ApiColomiersVolley.Controllers
         [HttpGet]
         public async Task<IEnumerable<DtoUserRole>> Get()
         {
-            try
-            {
-                await _mailManager.SendMailSimple("Admin logged", "Call made to get Users List");
-            }
-            catch (Exception)
-            {
-
-            }
-            
             return await _bsUser.GetListe();
         }
 

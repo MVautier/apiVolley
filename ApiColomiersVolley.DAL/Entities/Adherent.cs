@@ -55,7 +55,7 @@ namespace ApiColomiersVolley.DAL.Entities
         public string? Team2 { get; set; }
         [Column("licence", TypeName = "varchar(20)")]
         public string? Licence { get; set; }
-        [Column("verif_paiement", TypeName = "varchar(100)")]
+        [Column("verif_paiement", TypeName = "varchar(800)")]
         public string? PaymentComment { get; set; }
         [Column("alert1", TypeName = "varchar(500)")]
         public string? Alert1 { get; set; }

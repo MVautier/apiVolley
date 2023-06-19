@@ -19,6 +19,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             return new Models.DtoOrder
             {
                 Id = order.IdOrder,
+                IdPaiement= order.IdPaiement,
                 IdAdherent = order.IdAdherent,
                 Date = order.Date,
                 CotisationC3L = order.CotisationC3L,
@@ -26,7 +27,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Nom = order.Nom,
                 Prenom = order.Prenom,
                 Email = order.Email,
-                DateNaissance = order.DateNaissance
+                DateNaissance = order.DateNaissance,
+                PaymentLink = order.PaymentLink
             };
         }
 
@@ -53,7 +55,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Nom = order.Nom,
                 Prenom = order.Prenom,
                 Email = order.Email,
-                DateNaissance = order.DateNaissance
+                DateNaissance = order.DateNaissance,
+                PaymentLink = order.PaymentLink
             };
         }
 
@@ -79,7 +82,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Nom = order.Nom,
                 Prenom= order.Prenom,
                 Email= order.Email,
-                DateNaissance= order.DateNaissance
+                DateNaissance= order.DateNaissance,
+                PaymentLink = order.PaymentLink
             };
         }
 
@@ -100,6 +104,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             source.Prenom = order.Prenom;
             source.Email = order.Email;
             source.DateNaissance = order.DateNaissance;
+            source.PaymentLink = order.PaymentLink;
 
             return source;
         }

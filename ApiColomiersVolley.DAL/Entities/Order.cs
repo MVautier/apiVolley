@@ -26,11 +26,13 @@ namespace ApiColomiersVolley.DAL.Entities
         public int? Total { get; set; }
         [Column("nom")]
         public string? Nom { get; set; }
-        [Column("prennom")]
+        [Column("prenom")]
         public string? Prenom { get; set; }
         [Column("email")]
         public string? Email { get; set; }
         [Column("date_naissance")]
         public DateTime? DateNaissance { get; set; }
+        [Column("payment_link", TypeName = "varchar(800)")]
+        public string? PaymentLink { get; set; }
     }
 }

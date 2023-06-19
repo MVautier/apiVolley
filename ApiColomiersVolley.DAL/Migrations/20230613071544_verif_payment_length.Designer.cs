@@ -3,14 +3,16 @@ using System;
 using ApiColomiersVolley.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiColomiersVolley.DAL.Migrations
 {
     [DbContext(typeof(ColomiersVolleyContext))]
-    partial class ColomiersVolleyContextModelSnapshot : ModelSnapshot
+    [Migration("20230613071544_verif_payment_length")]
+    partial class verif_payment_length
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -397,10 +399,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                     b.Property<string>("Nom")
                         .HasColumnType("text")
                         .HasColumnName("nom");
-
-                    b.Property<string>("PaymentLink")
-                        .HasColumnType("varchar(800)")
-                        .HasColumnName("payment_link");
 
                     b.Property<string>("Prenom")
                         .HasColumnType("text")

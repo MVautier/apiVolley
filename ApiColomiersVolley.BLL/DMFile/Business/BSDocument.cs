@@ -27,7 +27,7 @@ namespace ApiColomiersVolley.BLL.DMFile.Business
             return fileModel;
         }
 
-        public async Task<string> SavePdf(string filename, string id, IFormFile file)
+        public async Task<string> SaveDocument(string filename, string id, IFormFile file)
         {
             var paths = _fileManager.InitAdherentPaths(id);
             await _fileManager.CreateFile(Path.Combine(paths.BasePath, filename), file);

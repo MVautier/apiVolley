@@ -129,7 +129,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             source.LastName = adherent.LastName;
             source.Genre = adherent.Genre;
             source.BirthdayDate = adherent.BirthdayDate;
-            source.InscriptionDate = DateTime.Now;
+            source.InscriptionDate = adherent.InscriptionDate;
+            source.CertificateDate= adherent.CertificateDate;
             source.HealthStatementDate = adherent.HealthStatementDate;
             source.Phone = adherent.Phone;
             source.ParentPhone = adherent.ParentPhone;
