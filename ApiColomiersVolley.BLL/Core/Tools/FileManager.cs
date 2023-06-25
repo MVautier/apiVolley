@@ -67,7 +67,12 @@ namespace ApiColomiersVolley.BLL.Core.Tools
 
         public string GetTypeByName(string name)
         {
-            return name.Contains("photo") ? "photo" : name.Contains("certificat") ? "certificat" : name.Contains("attestation") ? "attestation" : name.Contains("adhesion") ? "adhesion" : "";
+            return 
+                name.Contains("photo") ? "photo" : 
+                name.Contains("certificat") ? "certificat" : 
+                name.Contains("attestation") ? "attestation" : 
+                name.Contains("adhesion") ? "adhesion" : 
+                name.Contains("autorisation") ? "autorisation" : "";
         }
 
         public DateTime GetDateLastModified(string path)
