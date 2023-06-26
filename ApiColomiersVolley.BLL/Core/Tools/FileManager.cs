@@ -72,7 +72,8 @@ namespace ApiColomiersVolley.BLL.Core.Tools
                 name.Contains("certificat") ? "certificat" : 
                 name.Contains("attestation") ? "attestation" : 
                 name.Contains("adhesion") ? "adhesion" : 
-                name.Contains("autorisation") ? "autorisation" : "";
+                name.Contains("autorisation") ? "autorisation" :
+                name.Contains("signature") ? "signature" : "";
         }
 
         public DateTime GetDateLastModified(string path)

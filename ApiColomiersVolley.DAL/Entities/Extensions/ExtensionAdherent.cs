@@ -29,7 +29,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 IdAdherent = adherent.IdAdherent,
                 IdParent = adherent.IdParent,
                 Section = adherent.Section?.Libelle,
-                Category = adherent.Category.Code,
+                Category = adherent.Category?.Code,
                 Authorization = adherent.Authorization,
                 FirstName = adherent.FirstName,
                 LastName = adherent.LastName,
