@@ -40,7 +40,9 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             foreach (var adherent in adherents)
             {
                 adherent.Order = orders.FirstOrDefault(o => o.IdAdherent == adherent.IdAdherent);
-                adherent.Membres = adherents.Where(a => a.Address == adherent.Address && a.IdAdherent != adherent.IdAdherent).ToList();
+                adherent.Membres = !string.IsNullOrEmpty(adherent.Address) ? 
+                    adherents.Where(a => a.Address == adherent.Address && a.IdAdherent != adherent.IdAdherent).ToList()
+                    : new List<DtoAdherent>();
                 results.Add(adherent);
             }
             return results;
