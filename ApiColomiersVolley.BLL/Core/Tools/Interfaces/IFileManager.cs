@@ -1,4 +1,5 @@
 ﻿using ApiColomiersVolley.BLL.Core.Tools.Models;
+using ApiColomiersVolley.BLL.DMAdherent.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -27,5 +28,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools.Interfaces
         Task<byte[]> CreateExcelFile<T>(List<T> list, string fileName, string sheetName);
         string GetTypeByName(string name);
         Task<FileModel> GetFile(string filename, string uid);
+        string CreateZipFile(string filename, List<DtoDocument> files);
+        Task<FileModel> GetFile(string path);
     }
 }

@@ -10,6 +10,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
     public class DtoDocument
     {
         public string filename { get; set; }
+        public string? customName { get; set; }
         public string type { get; set; }
         public Blob? blob { get; set; }
         public bool sent { get; set; }

@@ -1,7 +1,9 @@
 ﻿using ApiColomiersVolley.BLL.Core.Tools.Extensions;
 using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools.Models;
+using ApiColomiersVolley.BLL.DMAdherent.Models;
 using Cartegie.BLL.CreationDeFichiers.Interface;
+using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
@@ -76,6 +78,52 @@ namespace ApiColomiersVolley.BLL.Core.Tools
                 name.Contains("signature") ? "signature" : "";
         }
 
+        public string CreateZipFile(string filename, List<DtoDocument> files)
+        {
+            string zipName = null;
+            var basePath = _hostingEnvironment.WebRootPath;
+            var paths = _config.GetSection("Paths");
+            //string dirname = GetDirName(id);
+            var exportBasePath = Path.Combine(basePath, paths.GetValue<string>("Export"));
+            var adhBasePath = Path.Combine(basePath, paths.GetValue<string>("Adherent"));
+
+            if (!string.IsNullOrEmpty(filename))
+            {
+                zipName = Path.Combine(exportBasePath, filename + ".zip");
+                FileStream fsOut = File.Create(zipName);
+                ZipOutputStream zipStream = new ZipOutputStream(fsOut);
+                zipStream.SetLevel(9);// ranges 0 to 9 ... 0 = no compression : 9 = max compression
+                byte[] buffer = new byte[4096];
+                foreach (DtoDocument file in files)
+                {
+                    string filePath = Path.Combine(adhBasePath, file.filename);
+                    ZipEntry entry = new ZipEntry(file.customName)
+                    {
+                        DateTime = DateTime.Now,
+                    };
+                    zipStream.PutNextEntry(entry);
+                    using (FileStream fs = File.OpenRead(filePath))
+                    {
+                        // Using a fixed size buffer here makes no noticeable difference for output
+                        // but keeps a lid on memory usage.
+                        int sourceBytes;
+                        do
+                        {
+                            sourceBytes = fs.Read(buffer, 0, buffer.Length);
+                            zipStream.Write(buffer, 0, sourceBytes);
+                        } while (sourceBytes > 0);
+                    }
+                }
+
+                zipStream.Finish();
+
+                // Close is important to wrap things up and unlock the file.
+                zipStream.Close();
+            }
+
+            return zipName;
+        }
+
         public DateTime GetDateLastModified(string path)
         {
             var directory = new DirectoryInfo(path);
@@ -98,6 +146,22 @@ namespace ApiColomiersVolley.BLL.Core.Tools
         {
             var config = InitAdherentPaths(uid, false);
             string path = Path.Combine(config.BasePath, filename);
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                throw new System.IO.FileNotFoundException(path);
+            }
+            var provider = new FileExtensionContentTypeProvider();
+            string contentType;
+            if (!provider.TryGetContentType(path, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            var bytes = await File.ReadAllBytesAsync(path);
+            return new FileModel(Path.GetFileName(path), bytes, contentType);
+        }
+
+        public async Task<FileModel> GetFile(string path)
+        {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
                 throw new System.IO.FileNotFoundException(path);

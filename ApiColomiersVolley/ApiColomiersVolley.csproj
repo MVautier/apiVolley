@@ -27,6 +27,7 @@
     <Folder Include="wwwroot\medias\images\" />
     <Folder Include="wwwroot\medias\thumbnail\" />
     <Folder Include="wwwroot\adherents\" />
+    <Folder Include="wwwroot\export\" />
   </ItemGroup>
 
 </Project>

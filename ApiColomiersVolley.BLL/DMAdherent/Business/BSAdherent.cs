@@ -8,6 +8,7 @@ using ApiColomiersVolley.BLL.DMItem.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,6 +91,74 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             }
 
             return result;
+        }
+
+        public async Task<FileModel> GetDocuments(AdherentFilter filter, string type)
+        {
+            var result = await _adherentRepo.GetPagedAdherents(filter, null, null);
+            var docs = GetDocuments(result, type);
+            if (docs.Any())
+            {
+                string zipfile = _fileManager.CreateZipFile(type + "s", docs);
+                var file = await _fileManager.GetFile(zipfile);
+                return file;
+            }
+            return null;
+        }
+
+        private List<DtoDocument> GetDocuments(PagedList<DtoAdherent> list, string type)
+        {
+            List<DtoDocument> docs = new List<DtoDocument>();
+            if (list.Count > 0 && list.Datas.Any())
+            {
+                foreach (var adherent in list.Datas)
+                {
+                    if (adherent.Uid != null && adherent.FirstName != null && adherent.LastName != null && adherent.BirthdayDate != null)
+                    {
+                        var paths = _fileManager.InitAdherentPaths(adherent.Uid, false);
+                        var files = _fileManager.FindFiles(paths.BasePath);
+                        if (files != null && files.Any())
+                        {
+                            foreach (var file in files)
+                            {
+                                string _type = _fileManager.GetTypeByName(file.Name);
+                                if (_type == type)
+                                {
+                                    docs.Add(new DtoDocument
+                                    {
+                                        filename = Path.Combine(adherent.Uid, file.Name),
+                                        customName = GetDocumentName(adherent, file.Name),
+                                        type = type,
+                                        blob = null,
+                                        sent = true
+                                    });
+                                }
+                                
+                            }
+                        }
+                    }
+                }
+            }
+
+            return docs;
+        }
+
+        private string GetDocumentName(DtoAdherent adherent, string filename)
+        {
+            string name = adherent.FirstName.ToLower().Replace(" ", "-") + "-" + 
+                adherent.LastName.ToLower().Replace(" ", "-") + "-" +
+                LeadZero(adherent.BirthdayDate.Value.Day) + "-" + LeadZero(adherent.BirthdayDate.Value.Month) + "-" + adherent.BirthdayDate.Value.Year.ToString() + "-" +  
+                filename;
+            return name;
+        }
+
+        private string LeadZero(int value)
+        {
+            if (value < 10)
+            {
+                return "0" + value.ToString();
+            }
+            return value.ToString();
         }
 
         public async Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp)

@@ -38,7 +38,7 @@ namespace ApiColomiersVolley.Controllers
         /// <returns>Return the file of the quote</returns>
         [HttpGet]
         [Route("download/{fileName}")]
-        public async Task<ActionResult> DownloadQuoteFile(string fileName, [FromQuery] string uid)
+        public async Task<ActionResult> DownloadFile(string fileName, [FromQuery] string uid)
         {
             var file = await _bsDocument.DownloadFile(fileName, uid);
             return File(file.Content, file.Type, file.Name);

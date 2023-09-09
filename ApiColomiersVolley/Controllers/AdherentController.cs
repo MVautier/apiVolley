@@ -78,6 +78,26 @@ namespace ApiColomiersVolley.Controllers
         }
 
         /// <summary>
+        /// Gets a zip file containing all documents of a type 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="type"></param>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpPost]
+        [Route("docs")]
+        public async Task<ActionResult> GetDocuments([FromBody] AdherentFilter filter,[FromQuery] string type)
+        {
+            var file = await _bsAdherent.GetDocuments(filter, type);
+            return File(file.Content, file.Type, file.Name);
+        }
+
+
+
+        /// <summary>
         /// Gets all adherents
         /// </summary>
         /// <response code="200">Success / Succès de la requête</response>
