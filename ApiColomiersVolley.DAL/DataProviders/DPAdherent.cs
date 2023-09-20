@@ -81,7 +81,7 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
         public async Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting? sorting, Pagination? pagination)
         {
-            var adherents = GetFilteredAdherents(filter);
+            var adherents = await GetFilteredAdherents(filter);
             
             if (sorting != null)
             {
@@ -92,13 +92,34 @@ namespace ApiColomiersVolley.DAL.DataProviders
             return new PagedList<DtoAdherent>(paginated.ToDtoAdherent().ToList(), adherents.Count());
         }
 
-        private IQueryable<Adherent> GetFilteredAdherents(AdherentFilter? filter)
+        private async Task<IQueryable<Adherent>> GetFilteredAdherents(AdherentFilter? filter)
         {
 
             var adherents = GetAll();
 
             if (filter != null)
             {
+                if (filter.HasPaid != null && filter.HasPaid.HasValue)
+                {
+                    var now = DateTime.Now;
+                    var y = now.Year;
+                    var m = now.Month;
+                    var season = now.Month >= 6 ? y : y - 1;
+
+                    var ids = await _db.Orders.Where(o => o.Date != null && o.Date.Value.Year >= season).Select(o => o.IdAdherent).ToListAsync();
+                    if (ids.Any())
+                    {
+                        if (filter.HasPaid.Value == true)
+                        {
+                            adherents = adherents.Where(a => a.Saison == season && ids.Contains(a.IdAdherent));
+                        }
+                        else
+                        {
+                            adherents = adherents.Where(a => a.Saison == season && !ids.Contains(a.IdAdherent));
+                        }
+                    }
+                }
+
                 if (filter.DateRange != null && (filter.DateRange.Start.HasValue || filter.DateRange.End.HasValue))
                 {
                     adherents = FilterDate(adherents, filter.DateRange);
@@ -145,16 +166,32 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
         private IQueryable<Adherent> FilterDate(IQueryable<Adherent> adherents, DateRange dateRange)
         {
+            //if (dateRange.Start.HasValue)
+            //{
+            //    adherents = adherents.Where(o => o.InscriptionDate.HasValue && String.Compare(Date2String(o.InscriptionDate.Value), Date2String(dateRange.Start.Value)) >= 0);
+            //}
+            //if (dateRange.End.HasValue)
+            //{
+            //    adherents = adherents.Where(o => o.InscriptionDate.HasValue && String.Compare(Date2String(o.InscriptionDate.Value), Date2String(dateRange.End.Value.AddDays(1))) <= 0);
+            //}
             if (dateRange.Start.HasValue)
             {
                 adherents = adherents.Where(o => o.InscriptionDate >= dateRange.Start);
             }
             if (dateRange.End.HasValue)
             {
-                adherents = adherents.Where(o => o.InscriptionDate <= dateRange.End.Value.AddDays(1));
+                adherents = adherents.Where(o => o.InscriptionDate < dateRange.End.Value.AddDays(1));
             }
 
             return adherents;
+        }
+
+        private string Date2String(DateTime date)
+        {
+            int year = date.Year;
+            int month = date.Month; 
+            int day = date.Day;
+            return year.ToString() + (month < 10 ? "0" + month.ToString() : month.ToString()) + (day < 10 ? "0" + day.ToString() : day.ToString());
         }
 
         private Func<AdherentFilter, Expression<Func<Adherent, bool>>> ApplyFilters
