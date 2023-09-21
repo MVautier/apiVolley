@@ -119,7 +119,7 @@ namespace ApiColomiersVolley.DAL.DataProviders
                     {
                         if (filter.HasPaid.Value == true)
                         {
-                            adherents = adherents.Where(a => a.Saison == season && (ids.Contains(a.IdAdherent) || a.Payment != "Terminé"));
+                            adherents = adherents.Where(a => a.Saison == season && (ids.Contains(a.IdAdherent) || (a.Payment != null && a.Payment != "Terminé")));
                         }
                         else
                         {
