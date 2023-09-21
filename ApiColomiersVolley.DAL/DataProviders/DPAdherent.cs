@@ -119,11 +119,11 @@ namespace ApiColomiersVolley.DAL.DataProviders
                     {
                         if (filter.HasPaid.Value == true)
                         {
-                            adherents = adherents.Where(a => a.Saison == season && (ids.Contains(a.IdAdherent) && a.Payment != null && a.Payment != "En attente"));
+                            adherents = adherents.Where(a => a.Saison == season && (ids.Contains(a.IdAdherent) && !string.IsNullOrEmpty(a.Payment) && a.Payment != "En attente"));
                         }
                         else
                         {
-                            adherents = adherents.Where(a => a.Saison == season && (!ids.Contains(a.IdAdherent) || a.Payment == null || a.Payment == "En attente"));
+                            adherents = adherents.Where(a => a.Saison == season && (!ids.Contains(a.IdAdherent) || a.Payment == "En attente" || string.IsNullOrEmpty(a.Payment)));
                         }
                     }
                 }
