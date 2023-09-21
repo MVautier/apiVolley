@@ -179,6 +179,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                         foreach (DtoAdherent membre in adherent.Membres)
                         {
                             membre.IdParent = result.IdAdherent;
+                            membre.Payment = result.Payment;
                             await _adherentRepo.AddOrUpdate(membre);
                         }
                     }
