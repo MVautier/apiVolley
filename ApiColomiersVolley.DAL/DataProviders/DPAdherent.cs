@@ -162,6 +162,9 @@ namespace ApiColomiersVolley.DAL.DataProviders
                     "FirstName" => sorting.ApplyExpressions(list, x => !string.IsNullOrEmpty(x.FirstName) ? x.FirstName.ToLower() : ""),
                     "LastName" => sorting.ApplyExpressions(list, x => !string.IsNullOrEmpty(x.LastName) ? x.LastName.ToLower() : ""),
                     "PostalCode" => sorting.ApplyExpressions(list, x => x.PostalCode),
+                    "Payment" => sorting.ApplyExpressions(list, x => x.Payment),
+                    "Category" => sorting.ApplyExpressions(list, x => x.Category.Code ?? ""),
+                    "Section" => sorting.ApplyExpressions(list, x => x.Section.Libelle ?? ""),
                     "City" => sorting.ApplyExpressions(list, x => x.City),
                     _ => sorting.ApplyExpressions(list, x => x.IdAdherent)
                 };
