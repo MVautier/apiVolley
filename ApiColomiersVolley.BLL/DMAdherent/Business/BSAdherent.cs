@@ -1,4 +1,5 @@
 ﻿using ApiColomiersVolley.BLL.Core.Models.Generic;
+using ApiColomiersVolley.BLL.Core.Tools;
 using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
@@ -168,34 +169,45 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
 
         public async Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent)
         {
-            DtoAdherent result = await _adherentRepo.AddOrUpdate(adherent);
-            if (result != null) 
+            try
             {
-                if (adherent.Membres.Any())
+                DtoAdherent result = await _adherentRepo.AddOrUpdate(adherent);
+                if (result != null)
                 {
-                    foreach (DtoAdherent membre in adherent.Membres)
+                    if (adherent.Membres.Any())
                     {
-                        membre.IdParent = result.IdAdherent;
-                        await _adherentRepo.AddOrUpdate(membre);
-                    }
-                }
-
-                if (adherent.Order != null)
-                {
-                    if (adherent.Order.IdAdherent == 0)
-                    {
-                        adherent.Order.IdAdherent = result.IdAdherent;
+                        foreach (DtoAdherent membre in adherent.Membres)
+                        {
+                            membre.IdParent = result.IdAdherent;
+                            await _adherentRepo.AddOrUpdate(membre);
+                        }
                     }
 
-                    await _orderRepo.AddOrUpdate(adherent.Order);
+                    if (adherent.Order != null)
+                    {
+                        if (adherent.Order.IdAdherent == 0)
+                        {
+                            adherent.Order.IdAdherent = result.IdAdherent;
+                        }
+
+                        await _orderRepo.AddOrUpdate(adherent.Order);
+                    }
                 }
-            }
 
 #if (!DEBUG)
             await SendMailInfo(result);
 #endif
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                string content = JsonConvert.SerializeObject(adherent);
+                await _mailManager.SendMailErreur(ex, "Erreur saving adherent: " + Environment.NewLine + content);
+            }
+
+            return null;
+
         }
 
         public async Task<FileModel> GetExcelFile(AdherentFilter filter)

@@ -50,7 +50,15 @@ namespace ApiColomiersVolley.DAL.DataProviders
             if (adh != null)
             {
                 adh = adherent.ToAdherent(adh);
-                await _db.SaveChangesAsync();
+                try
+                {
+                    await _db.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                
                 return adherent;
             }
             else if (adherent.IdAdherent > 0)
@@ -111,11 +119,11 @@ namespace ApiColomiersVolley.DAL.DataProviders
                     {
                         if (filter.HasPaid.Value == true)
                         {
-                            adherents = adherents.Where(a => a.Saison == season && ids.Contains(a.IdAdherent));
+                            adherents = adherents.Where(a => a.Saison == season && (ids.Contains(a.IdAdherent) || a.Payment != "Terminé"));
                         }
                         else
                         {
-                            adherents = adherents.Where(a => a.Saison == season && !ids.Contains(a.IdAdherent));
+                            adherents = adherents.Where(a => a.Saison == season && (!ids.Contains(a.IdAdherent) || a.Payment == null || a.Payment == "En attente"));
                         }
                     }
                 }
