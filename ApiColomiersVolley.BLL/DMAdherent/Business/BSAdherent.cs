@@ -43,7 +43,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             {
                 adherent.Order = orders.FirstOrDefault(o => o.IdAdherent == adherent.IdAdherent);
                 adherent.Membres = !string.IsNullOrEmpty(adherent.Address) ? 
-                    adherents.Where(a => a.Address == adherent.Address && a.IdAdherent != adherent.IdAdherent).ToList()
+                    adherents.Where(a => a.Address == adherent.Address && a.IdAdherent != adherent.IdAdherent && a.IdParent == adherent.IdAdherent).ToList()
                     : new List<DtoAdherent>();
                 results.Add(adherent);
             }
