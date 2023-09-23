@@ -141,14 +141,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             source.Payment = adherent.Payment;
             source.PaymentComment = adherent.PaymentComment;
             source.Photo = adherent.Photo;
-            if (!string.IsNullOrEmpty(adherent.Team1))
-            {
-                source.Team1 = adherent.Team1;
-            }
-            if (!string.IsNullOrEmpty(adherent.Team2))
-            {
-                source.Team2 = adherent.Team2;
-            }
+            source.Team1 = adherent.Team1;
+            source.Team2 = adherent.Team2;
             if (!string.IsNullOrEmpty(adherent.Licence))
             {
                 source.Licence = adherent.Licence;

@@ -13,6 +13,7 @@ namespace ApiColomiersVolley.BLL.Core.Models.Generic
         public bool? HasLicence { get; set; }
         public int? IdSection { get; set; }
         public int? IdCategory { get; set; }
+        public string? Team { get; set; }
         public DynamicFilter? DynamicFilter { get; set; }
         public DateRange? DateRange { get; set; }
     }

@@ -216,6 +216,8 @@ namespace ApiColomiersVolley.DAL.DataProviders
                         (!filters.IdSection.HasValue || adherent.IdSection == filters.IdSection)
                         &&
                         (!filters.IdCategory.HasValue || adherent.IdCategory == filters.IdCategory)
+                         &&
+                        (filters.Team == null || adherent.Team1 == filters.Team || adherent.Team2 == filters.Team)
                ;
 
     }
