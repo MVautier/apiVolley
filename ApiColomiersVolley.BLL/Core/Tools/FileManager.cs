@@ -295,7 +295,15 @@ namespace ApiColomiersVolley.BLL.Core.Tools
                 var values = new object[Props.Length];
                 for (int i = 0; i < Props.Length; i++)
                 {
-                    values[i] = Props[i].GetValue(item, null);
+                    if (Props[i].PropertyType == typeof(List<string>))
+                    {
+                        List<string> vals = (List<string>)Props[i].GetValue(item, null);
+                        values[i] = vals != null && vals.Any() ? string.Join(", ", vals) : "";
+                    }
+                    else
+                    {
+                        values[i] = Props[i].GetValue(item, null);
+                    }
                 }
                 dataTable.Rows.Add(values);
             }
