@@ -310,5 +310,30 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             return dataTable;
         }
 
+        public async Task<byte[]> CreateEmailFile(List<string> list, string fileName, string extension)
+        {
+            var dataTable = new DataTable();
+            dataTable.Columns.Add(new DataColumn(list.First(), typeof(string)));
+            foreach (var item in list.Skip(1))
+            {
+                dataTable.Rows.Add(new string[] { item });
+            }
+            
+            string result;
+            byte[] fileBytes;
+            try
+            {
+                var basePath = _hostingEnvironment.WebRootPath;
+                var paths = _config.GetSection("Paths");
+                var path = Path.Combine(basePath, paths.GetValue<string>("Export"), fileName);
+                result = _fileExport.CreateFile(path, extension, dataTable);
+                fileBytes = await ReadFileAsBytes(new FileInfo(result));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return fileBytes;
+        }
     }
 }

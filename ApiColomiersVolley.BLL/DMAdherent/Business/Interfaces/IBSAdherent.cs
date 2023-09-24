@@ -17,5 +17,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces
         Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent);
         Task<FileModel> GetExcelFile(AdherentFilter filter);
         Task<FileModel> GetDocuments(AdherentFilter filter, string type);
+        Task<FileModel> GetEmailFile(AdherentFilter filter);
     }
 }

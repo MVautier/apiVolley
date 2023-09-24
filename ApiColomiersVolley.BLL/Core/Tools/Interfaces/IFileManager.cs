@@ -30,5 +30,6 @@ namespace ApiColomiersVolley.BLL.Core.Tools.Interfaces
         Task<FileModel> GetFile(string filename, string uid);
         string CreateZipFile(string filename, List<DtoDocument> files);
         Task<FileModel> GetFile(string path);
+        Task<byte[]> CreateEmailFile(List<string> list, string fileName, string extension);
     }
 }

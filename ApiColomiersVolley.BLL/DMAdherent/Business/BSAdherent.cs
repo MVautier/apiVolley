@@ -226,6 +226,21 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             throw new ArgumentNullException("Aucun compte n'a été trouvé");
         }
 
+        public async Task<FileModel> GetEmailFile(AdherentFilter filter)
+        {
+            var adherents = await _adherentRepo.GetPagedAdherents(filter, null, null);
+            var fileName = "Emails";
+
+            if (adherents != null && adherents.Datas.Any())
+            {
+                List<string> emails = adherents.Datas.Select(a => a.Email + ";").ToList();
+                var fileBytes = await _fileManager.CreateEmailFile(emails, fileName, "txt");
+                return new FileModel(fileName + ".txt", fileBytes, "application/octet-stream");
+            }
+
+            throw new ArgumentNullException("Aucun compte n'a été trouvé");
+        }
+
         private async Task SendMailInfo(DtoAdherent adherent)
         {
             try
