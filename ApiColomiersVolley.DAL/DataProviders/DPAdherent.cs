@@ -4,6 +4,8 @@ using ApiColomiersVolley.BLL.DMAdherent.Repositories;
 using ApiColomiersVolley.DAL.Entities;
 using ApiColomiersVolley.DAL.Entities.Extensions;
 using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI;
+using Org.BouncyCastle.Crypto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,12 +110,14 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
             if (filter != null)
             {
+                var now = DateTime.Now;
+                var y = now.Year;
+                var m = now.Month;
+                var season = now.Month >= 6 ? y : y - 1;
+
                 if (filter.HasPaid != null && filter.HasPaid.HasValue)
                 {
-                    var now = DateTime.Now;
-                    var y = now.Year;
-                    var m = now.Month;
-                    var season = now.Month >= 6 ? y : y - 1;
+                    
 
                     var ids = await _db.Orders.Where(o => o.Date != null && o.Date.Value.Year >= season).Select(o => o.IdAdherent).ToListAsync();
                     if (ids.Any())
@@ -135,6 +139,11 @@ namespace ApiColomiersVolley.DAL.DataProviders
                 }
 
                 adherents = adherents.Where(ApplyFilters(filter));
+                if (filter.Team != null)
+                {
+                    adherents = adherents.Where(a => a.Saison == season && a.IdCategory == 1 && (filter.Team == "sans" ? string.IsNullOrEmpty(a.Team1) && string.IsNullOrEmpty(a.Team2) : (a.Team1 == filter.Team || a.Team2 == filter.Team)));
+                }
+
                 if (filter.DynamicFilter != null)
                 {
                     var predicate = ExpressionBuilder.GetExpression<Adherent>(new List<DynamicFilter> { filter.DynamicFilter });
@@ -216,8 +225,8 @@ namespace ApiColomiersVolley.DAL.DataProviders
                         (!filters.IdSection.HasValue || adherent.IdSection == filters.IdSection)
                         &&
                         (!filters.IdCategory.HasValue || adherent.IdCategory == filters.IdCategory)
-                         &&
-                        (filters.Team == null || adherent.Team1 == filters.Team || adherent.Team2 == filters.Team)
+                        // &&
+                        //(filters.Team == null || adherent.Team1 == filters.Team || adherent.Team2 == filters.Team)
                ;
 
     }
