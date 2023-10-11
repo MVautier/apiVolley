@@ -39,7 +39,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public bool? ImageRight { get; set; }
         public string? Signature { get; set; }
         public List<DtoDocument>? Documents { get; set; }
-        public DtoOrder? Order { get; set; }
+        public List<DtoOrder> Orders { get; set; }
 
         // Champs saisis par l'admin
         public int? Saison { get; set; }

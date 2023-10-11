@@ -41,7 +41,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             var orders = await _orderRepo.Get();
             foreach (var adherent in adherents)
             {
-                adherent.Order = orders.FirstOrDefault(o => o.IdAdherent == adherent.IdAdherent);
+                adherent.Orders = orders.Where(o => o.IdAdherent == adherent.IdAdherent).OrderByDescending(o => o.Date).ToList();
                 adherent.Membres = !string.IsNullOrEmpty(adherent.Address) ? 
                     adherents.Where(a => a.Address == adherent.Address && a.IdAdherent != adherent.IdAdherent && a.IdParent == adherent.IdAdherent).ToList()
                     : new List<DtoAdherent>();
@@ -82,7 +82,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     var orders = await _orderRepo.GetByAdherent(adherent.IdAdherent);
                     if (orders.Any())
                     {
-                        adherent.Order = orders.OrderByDescending(o => o.Date).FirstOrDefault();
+                        adherent.Orders = orders.OrderByDescending(o => o.Date).ToList();
                     }
                     
                     adherents.Add(adherent);
@@ -184,14 +184,19 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                         }
                     }
 
-                    if (adherent.Order != null)
+                    if (adherent.Orders.Any(o => o != null))
                     {
-                        if (adherent.Order.IdAdherent == 0)
+                        adherent.Orders = adherent.Orders.Where(o => o != null).ToList();
+                        foreach (var order in adherent.Orders)
                         {
-                            adherent.Order.IdAdherent = result.IdAdherent;
-                        }
+                            if (order.IdAdherent == 0)
+                            {
+                                order.IdAdherent = result.IdAdherent;
+                            }
 
-                        await _orderRepo.AddOrUpdate(adherent.Order);
+                            await _orderRepo.AddOrUpdate(order);
+                        }
+                        
                     }
                 }
 
