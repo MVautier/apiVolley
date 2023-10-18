@@ -35,6 +35,12 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 {
                     categs.First(c => c.IdCategory == 3).Blocked = true;
                 }
+
+                if (!_config.GetValue<bool>("loisir_opened"))
+                {
+                    categs.First(c => c.IdCategory == 2).Blocked = true;
+                }
+                
             }
             return categs;
         }
