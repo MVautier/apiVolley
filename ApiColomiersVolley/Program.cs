@@ -59,11 +59,7 @@ if (builder.Configuration.GetSection("FeatureActivation")?.GetValue<bool?>("enab
 
     });
 }
-//builder.Services.AddHealthChecks().AddSqlServer(
-//    connectionString: builder.Configuration.GetConnectionString("EasyFichiersContext"),
-//    healthQuery: "SELECT 1",
-//    name: "Sql Serveur",
-//    failureStatus: HealthStatus.Unhealthy);
+
 var apps = builder.Configuration.GetSection("Web").GetValue<string>("applications").Split(',');
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
