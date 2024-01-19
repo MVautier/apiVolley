@@ -34,19 +34,23 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 if (ados.Count() > nbMax)
                 {
                     categs.First(c => c.IdCategory == 3).Blocked = true;
-                }
-
-                if (!_config.GetValue<bool>("compet_opened"))
-                {
-                    categs.First(c => c.IdCategory == 1).Blocked = true;
-                }
-
-                if (!_config.GetValue<bool>("loisir_opened"))
-                {
-                    categs.First(c => c.IdCategory == 2).Blocked = true;
-                }
-                
+                } 
+            } 
+            else if (!_config.GetValue<bool>("ado_opened"))
+            {
+                categs.First(c => c.IdCategory == 3).Blocked = true;
             }
+
+            if (!_config.GetValue<bool>("compet_opened"))
+            {
+                categs.First(c => c.IdCategory == 1).Blocked = true;
+            }
+
+            if (!_config.GetValue<bool>("loisir_opened"))
+            {
+                categs.First(c => c.IdCategory == 2).Blocked = true;
+            }
+
             return categs;
         }
     }
