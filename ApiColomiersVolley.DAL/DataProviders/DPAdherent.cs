@@ -113,22 +113,24 @@ namespace ApiColomiersVolley.DAL.DataProviders
                 var now = DateTime.Now;
                 var y = now.Year;
                 var m = now.Month;
-                var season = now.Month >= 6 ? y : y - 1;
+
+                if (filter.Saison != null)
+                {
+                    adherents = adherents.Where(a => a.Saison == filter.Saison);
+                }
 
                 if (filter.HasPaid != null && filter.HasPaid.HasValue)
                 {
-                    
-
-                    var ids = await _db.Orders.Where(o => o.Date != null && o.Date.Value.Year >= season).Select(o => o.IdAdherent).ToListAsync();
+                    var ids = await _db.Orders.Select(o => o.IdAdherent).ToListAsync();
                     if (ids.Any())
                     {
                         if (filter.HasPaid.Value == true)
                         {
-                            adherents = adherents.Where(a => a.Saison == season && (ids.Contains(a.IdAdherent) || (!string.IsNullOrEmpty(a.Payment) && a.Payment != "En attente")));
+                            adherents = adherents.Where(a => (ids.Contains(a.IdAdherent) || (!string.IsNullOrEmpty(a.Payment) && a.Payment != "En attente")));
                         }
                         else
                         {
-                            adherents = adherents.Where(a => a.Saison == season && !ids.Contains(a.IdAdherent) && a.Payment == "En attente");
+                            adherents = adherents.Where(a => !ids.Contains(a.IdAdherent) && a.Payment == "En attente");
                         }
                     }
                 }
@@ -141,7 +143,7 @@ namespace ApiColomiersVolley.DAL.DataProviders
                 adherents = adherents.Where(ApplyFilters(filter));
                 if (filter.Team != null)
                 {
-                    adherents = adherents.Where(a => a.Saison == season && a.IdCategory == 1 && (filter.Team == "sans" ? string.IsNullOrEmpty(a.Team1) && string.IsNullOrEmpty(a.Team2) : (a.Team1 == filter.Team || a.Team2 == filter.Team)));
+                    adherents = adherents.Where(a => a.IdCategory == 1 && (filter.Team == "sans" ? string.IsNullOrEmpty(a.Team1) && string.IsNullOrEmpty(a.Team2) : (a.Team1 == filter.Team || a.Team2 == filter.Team)));
                 }
 
                 if (filter.DynamicFilter != null)

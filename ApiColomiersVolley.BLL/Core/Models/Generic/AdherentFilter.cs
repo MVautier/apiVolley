@@ -16,5 +16,6 @@ namespace ApiColomiersVolley.BLL.Core.Models.Generic
         public string? Team { get; set; }
         public DynamicFilter? DynamicFilter { get; set; }
         public DateRange? DateRange { get; set; }
+        public int? Saison { get; set; }
     }
 }
