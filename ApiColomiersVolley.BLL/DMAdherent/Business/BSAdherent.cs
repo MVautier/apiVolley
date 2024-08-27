@@ -171,6 +171,16 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
         {
             try
             {
+                if (string.IsNullOrEmpty(adherent.Phone))
+                {
+                    adherent.Phone = "";
+                }
+
+                if (string.IsNullOrEmpty(adherent.Email))
+                {
+                    adherent.Email = "";
+                }
+
                 DtoAdherent result = await _adherentRepo.AddOrUpdate(adherent);
                 if (result != null)
                 {
