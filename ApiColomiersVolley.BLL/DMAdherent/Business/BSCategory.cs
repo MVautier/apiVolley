@@ -28,15 +28,18 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             int year = DateTime.Now.Year;
             var ados = await _adhRepo.GetAdherentsByCategoryAndSeason(3, year);
             var categs = (await this._categRepo.GetCategories()).ToList();
-            if (ados.Any())
+            if (_config.GetValue<bool>("ado_opened"))
             {
-                int nbMax = _config.GetValue<int>("nbAdoMax");
-                if (ados.Count() > nbMax)
+                if (ados.Any())
                 {
-                    categs.First(c => c.IdCategory == 3).Blocked = true;
-                } 
+                    int nbMax = _config.GetValue<int>("nbAdoMax");
+                    if (ados.Count() > nbMax)
+                    {
+                        categs.First(c => c.IdCategory == 3).Blocked = true;
+                    }
+                }
             } 
-            else if (!_config.GetValue<bool>("ado_opened"))
+            else 
             {
                 categs.First(c => c.IdCategory == 3).Blocked = true;
             }
