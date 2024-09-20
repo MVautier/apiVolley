@@ -59,7 +59,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Sections = adherent.Sections != null ? adherent.Sections.Split(',').ToList() : null,
                 Rgpd = adherent.Rgpd,
                 ImageRight = adherent.ImageRight,
-                Signature = adherent.Signature
+                Signature = adherent.Signature,
+                VerifC3L = adherent.VerifC3L
             };
         }
 
@@ -109,7 +110,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Sections = adherent.Sections != null && adherent.Sections.Any() ? string.Join(",", adherent.Sections) : null,
                 Rgpd = adherent.Rgpd,
                 ImageRight = adherent.ImageRight,
-                Signature = adherent.Signature
+                Signature = adherent.Signature,
+                VerifC3L = adherent.VerifC3L
             };
         }
 
@@ -156,6 +158,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             source.Rgpd = adherent.Rgpd;
             source.ImageRight = adherent.ImageRight;
             source.Signature = adherent.Signature;
+            source.VerifC3L = adherent.VerifC3L;
 
             return source;
         }
@@ -200,7 +203,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Sections = adherent.Sections != null && adherent.Sections.Any() ? string.Join(",", adherent.Sections) : null,
                 Rgpd = adherent.Rgpd,
                 ImageRight = adherent.ImageRight,
-                Signature = adherent.Signature
+                Signature = adherent.Signature,
+                VerifC3L = adherent.VerifC3L
             };
         }
 

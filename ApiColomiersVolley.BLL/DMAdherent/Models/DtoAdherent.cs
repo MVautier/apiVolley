@@ -48,6 +48,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public string? PaymentComment { get; set; }
         public DateTime? CertificateDate { get; set; }
         public string? Payment { get; set; }
-        
+        public string? VerifC3L { get; set; }
+
     }
 }
