@@ -256,6 +256,58 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             throw new ArgumentNullException("Aucun compte n'a été trouvé");
         }
 
+        public async Task<FileModel> GetOrderFile(AdherentFilter filter)
+        {
+            var adherents = await GetPagedListe(filter, null, null);
+            var fileName = "Paiements";
+            var orders_hello = new List<DtoOrder>();
+            var orders_manuals = new List<DtoOrder>();
+            var end = filter.DateRange.End.HasValue ? filter.DateRange.End.Value : DateTime.Now.AddDays(1);
+
+            if (adherents != null && adherents.Datas.Any())
+            {
+                foreach (var a in adherents.Datas)
+                {
+                    if (a.Saison == filter.Saison && a.Orders != null && a.Orders.Any())
+                    {
+                        foreach(var o in a.Orders)
+                        {
+                            if (o.Date >= filter.DateRange.Start && o.Date <= end)
+                            {
+                                orders_hello.Add(o);
+                            }
+                        }
+                        
+                    } 
+                    else if (!string.IsNullOrEmpty(a.Payment) && a.Payment != "Terminé" && a.Payment != "En attente" && a.InscriptionDate >= filter.DateRange.Start && a.InscriptionDate <= end)
+                    {
+                        orders_manuals.Add(new DtoOrder
+                        {
+                            Id = 0,
+                            IdPaiement = 0,
+                            IdAdherent = a.IdAdherent,
+                            Date = a.InscriptionDate,
+                            Nom = a.LastName,
+                            Prenom = a.LastName,
+                            Email = a.Email,
+                            DateNaissance = a.BirthdayDate,
+                            PaymentLink = a.Payment
+                        });
+                    }
+                }
+            }
+
+            var orders = orders_hello.Concat(orders_manuals).ToList();
+            if (orders.Any())
+            {
+                var sheetName = filter.DateRange != null ? $"Paiements_{filter.DateRange.Start.GetValueOrDefault():dd'_'MM'_'yyyy}_{filter.DateRange.End.GetValueOrDefault():dd'_'MM'_'yyyy}" : "Adhérents";
+                var fileBytes = await _fileManager.CreateExcelFile<DtoOrder>(orders, fileName, sheetName);
+                return new FileModel(fileName + ".xlsx", fileBytes, "application/octet-stream");
+            }
+
+            throw new ArgumentNullException("Aucun paiement n'a été trouvé");
+        }
+
         private async Task SendMailInfo(DtoAdherent adherent)
         {
             try

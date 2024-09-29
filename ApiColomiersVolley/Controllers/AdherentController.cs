@@ -181,5 +181,22 @@ namespace ApiColomiersVolley.Controllers
             var file = await _bsAdherent.GetEmailFile(filter);
             return File(file.Content, file.Type, file.Name);
         }
+
+        /// <summary>
+        /// Permet d'obtenir le fichier Excel de la liste des comptes clients
+        /// </summary>
+        /// <param name="filter">Les paramètres de filtrage</param>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        /// <returns>Une réponse HTTP 200 contenant les comptes</returns>
+        [HttpPost]
+        [Route("export/order")]
+        public async Task<ActionResult> GetOrderFile([FromBody] AdherentFilter filter)
+        {
+            var file = await _bsAdherent.GetOrderFile(filter);
+            return File(file.Content, file.Type, file.Name);
+        }
     }
 }
