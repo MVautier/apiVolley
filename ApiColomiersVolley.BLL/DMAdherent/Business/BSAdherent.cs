@@ -36,7 +36,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
 
         public async Task<IEnumerable<DtoAdherent>> GetListe()
         {
-            List<DtoAdherent> results = new List<DtoAdherent> ();
+            List<DtoAdherent> results = new List<DtoAdherent>();
             var adherents =  await _adherentRepo.GetAdherents();
             var orders = await _orderRepo.Get();
             foreach (var adherent in adherents)
@@ -75,7 +75,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                                     sent = true
                                 });
                             }
-                        }
+                        }  
                     }
 
                     adherent.Documents = docs;
@@ -266,8 +266,12 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
 
             if (adherents != null && adherents.Datas.Any())
             {
+
                 foreach (var a in adherents.Datas)
                 {
+                    a.Membres = !string.IsNullOrEmpty(a.Address) ?
+                            adherents.Datas.Where(_a => _a.Address == a.Address && _a.IdAdherent != a.IdAdherent && _a.IdParent == a.IdAdherent && _a.Saison == a.Saison).ToList()
+                            : new List<DtoAdherent>();
                     if (a.Saison == filter.Saison && a.Orders != null && a.Orders.Any())
                     {
                         foreach(var o in a.Orders)
@@ -281,6 +285,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                                     IdAdherent = a.IdAdherent,
                                     Date = a.InscriptionDate,
                                     Nom = a.LastName,
+                                    CotisationC3L = o.CotisationC3L,
+                                    Total = o.Total,
                                     Prenom = a.LastName,
                                     Email = a.Email,
                                     DateNaissance = a.BirthdayDate,
