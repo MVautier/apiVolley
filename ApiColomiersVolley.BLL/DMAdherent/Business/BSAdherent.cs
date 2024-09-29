@@ -260,8 +260,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
         {
             var adherents = await GetPagedListe(filter, null, null);
             var fileName = "Paiements";
-            var orders_hello = new List<DtoOrder>();
-            var orders_manuals = new List<DtoOrder>();
+            var orders_hello = new List<DtoOrderExport>();
+            var orders_manuals = new List<DtoOrderExport>();
             var end = filter.DateRange.End.HasValue ? filter.DateRange.End.Value : DateTime.Now.AddDays(1);
 
             if (adherents != null && adherents.Datas.Any())
@@ -274,14 +274,27 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                         {
                             if (o.Date >= filter.DateRange.Start && o.Date <= end)
                             {
-                                orders_hello.Add(o);
+                                orders_hello.Add(new DtoOrderExport
+                                {
+                                    Id = o.Id,
+                                    IdPaiement = o.IdPaiement,
+                                    IdAdherent = a.IdAdherent,
+                                    Date = a.InscriptionDate,
+                                    Nom = a.LastName,
+                                    Prenom = a.LastName,
+                                    Email = a.Email,
+                                    DateNaissance = a.BirthdayDate,
+                                    PaymentLink = o.PaymentLink,
+                                    PaymentComment = a.Payment,
+                                    Members = GetMembersInfo(a)
+                                });
                             }
                         }
                         
                     } 
                     else if (!string.IsNullOrEmpty(a.Payment) && a.Payment != "Terminé" && a.Payment != "En attente" && a.InscriptionDate >= filter.DateRange.Start && a.InscriptionDate <= end)
                     {
-                        orders_manuals.Add(new DtoOrder
+                        orders_manuals.Add(new DtoOrderExport
                         {
                             Id = 0,
                             IdPaiement = 0,
@@ -291,7 +304,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                             Prenom = a.LastName,
                             Email = a.Email,
                             DateNaissance = a.BirthdayDate,
-                            PaymentLink = a.Payment
+                            PaymentComment = a.Payment,
+                            Members = GetMembersInfo(a)
                         });
                     }
                 }
@@ -301,11 +315,31 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             if (orders.Any())
             {
                 var sheetName = filter.DateRange != null ? $"Paiements_{filter.DateRange.Start.GetValueOrDefault():dd'_'MM'_'yyyy}_{filter.DateRange.End.GetValueOrDefault():dd'_'MM'_'yyyy}" : "Adhérents";
-                var fileBytes = await _fileManager.CreateExcelFile<DtoOrder>(orders, fileName, sheetName);
+                var fileBytes = await _fileManager.CreateExcelFile<DtoOrderExport>(orders, fileName, sheetName);
                 return new FileModel(fileName + ".xlsx", fileBytes, "application/octet-stream");
             }
 
             throw new ArgumentNullException("Aucun paiement n'a été trouvé");
+        }
+
+        private string GetMembersInfo(DtoAdherent adherent)
+        {
+            string info = "";
+            int i = 0;
+            if (adherent.Membres != null && adherent.Membres.Any())
+            {
+                foreach(var m in adherent.Membres)
+                {
+                    info += i > 0 ? ", " : "";
+                    info  += m.FirstName + " " + m.LastName;
+                    if (m.BirthdayDate.HasValue)
+                    {
+                        info += " (" + m.BirthdayDate.Value.ToString("dd/MM/yyyy") + ")";
+                    }
+                    i++;
+                }
+            }
+            return info;
         }
 
         private async Task SendMailInfo(DtoAdherent adherent)
