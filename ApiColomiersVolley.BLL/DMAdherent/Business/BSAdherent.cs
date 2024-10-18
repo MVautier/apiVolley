@@ -291,14 +291,15 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                                     Email = a.Email,
                                     DateNaissance = a.BirthdayDate,
                                     PaymentLink = o.PaymentLink,
-                                    PaymentComment = a.Payment,
+                                    Payment = a.Payment,
+                                    PaymentComment = a.PaymentComment,
                                     Members = GetMembersInfo(a)
                                 });
                             }
                         }
                         
                     } 
-                    else if (!string.IsNullOrEmpty(a.Payment) && a.Payment != "Terminé" && a.Payment != "En attente" && a.InscriptionDate >= filter.DateRange.Start && a.InscriptionDate <= end)
+                    else if (!string.IsNullOrEmpty(a.Payment) && a.Payment == "Manuel" && a.InscriptionDate >= filter.DateRange.Start && a.InscriptionDate <= end)
                     {
                         orders_manuals.Add(new DtoOrderExport
                         {
@@ -310,7 +311,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                             Prenom = a.FirstName,
                             Email = a.Email,
                             DateNaissance = a.BirthdayDate,
-                            PaymentComment = a.Payment,
+                            Payment = a.Payment,
+                            PaymentComment = a.PaymentComment,
                             Members = GetMembersInfo(a)
                         });
                     }

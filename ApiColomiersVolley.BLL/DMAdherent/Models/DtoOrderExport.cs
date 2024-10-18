@@ -8,6 +8,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
 {
     public class DtoOrderExport : DtoOrder
     {
+        public string? Payment { get; set; }
         public string? PaymentComment { get; set; }
         public string? Members { get; set; }
     }
