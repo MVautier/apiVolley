@@ -1,5 +1,6 @@
 ﻿using ApiColomiersVolley.BLL.DMAdherent.Models;
 using ICSharpCode.SharpZipLib.Checksum;
+using Newtonsoft.Json;
 using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -60,7 +61,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Rgpd = adherent.Rgpd,
                 ImageRight = adherent.ImageRight,
                 Signature = adherent.Signature,
-                VerifC3L = adherent.VerifC3L
+                VerifC3L = adherent.VerifC3L,
+                Histo = !string.IsNullOrEmpty(adherent.Histo) ? JsonConvert.DeserializeObject<List<DtoHisto>>(adherent.Histo) : new List<DtoHisto>()
             };
         }
 
@@ -111,7 +113,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Rgpd = adherent.Rgpd,
                 ImageRight = adherent.ImageRight,
                 Signature = adherent.Signature,
-                VerifC3L = adherent.VerifC3L
+                VerifC3L = adherent.VerifC3L,
+                Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : null,
             };
         }
 
@@ -159,6 +162,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             source.ImageRight = adherent.ImageRight;
             source.Signature = adherent.Signature;
             source.VerifC3L = adherent.VerifC3L;
+            source.Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : source.Histo;
 
             return source;
         }
@@ -204,7 +208,8 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Rgpd = adherent.Rgpd,
                 ImageRight = adherent.ImageRight,
                 Signature = adherent.Signature,
-                VerifC3L = adherent.VerifC3L
+                VerifC3L = adherent.VerifC3L,
+                Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : null
             };
         }
 

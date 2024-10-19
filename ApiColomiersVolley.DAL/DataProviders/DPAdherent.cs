@@ -48,22 +48,6 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
         public async Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent)
         {
-            //Adherent adh = await GetAll().FirstOrDefaultAsync(a => !string.IsNullOrEmpty(adherent.Uid) && a.Uid == adherent.Uid);
-            //if (adh != null)
-            //{
-            //    adh = adherent.ToAdherent(adh);
-            //    try
-            //    {
-            //        await _db.SaveChangesAsync();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        throw ex;
-            //    }
-                
-            //    return adherent;
-            //}
-            //else 
             if (adherent.IdAdherent > 0)
             {
                 Adherent adh = await GetAll().FirstOrDefaultAsync(a => a.IdAdherent == adherent.IdAdherent);

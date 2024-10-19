@@ -1,4 +1,5 @@
-﻿using ApiColomiersVolley.BLL.Core.Models.Generic;
+﻿using ApiColomiersVolley.BLL.Core.Models.Enums;
+using ApiColomiersVolley.BLL.Core.Models.Generic;
 using ApiColomiersVolley.BLL.Core.Tools;
 using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools.Models;
@@ -181,6 +182,23 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     adherent.Email = "";
                 }
 
+                if (adherent.InscriptionDate.HasValue)
+                {
+                    if (adherent.Histo != null && adherent.Histo.Any())
+                    {
+                        var histo = adherent.Histo.FirstOrDefault(h => h.saison == adherent.Saison);
+                        if (histo == null)
+                        {
+                            adherent.Histo.Insert(0, new DtoHisto { saison = adherent.Saison, date = adherent.InscriptionDate.Value.ToString("yyyy-MM-dd"), Category = IntCategory(adherent.Category) });
+                        }
+                    }
+                    else
+                    {
+                        adherent.Histo = new List<DtoHisto> { new DtoHisto { saison = adherent.Saison, date = adherent.InscriptionDate.Value.ToString("yyyy-MM-dd"), Category = IntCategory(adherent.Category) } };
+                    }
+                }
+                
+
                 DtoAdherent result = await _adherentRepo.AddOrUpdate(adherent);
                 if (result != null)
                 {
@@ -361,6 +379,17 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             catch (Exception)
             {
 
+            }
+        }
+
+        public int IntCategory(string code)
+        {
+            switch (code)
+            {
+                case "C": return 1;
+                case "L": return 2;
+                case "E": return 3;
+                default: return 2;
             }
         }
     }

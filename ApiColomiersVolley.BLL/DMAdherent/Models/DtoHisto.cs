@@ -8,8 +8,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
 {
     public class DtoHisto
     {
-        public int? Saison { get; set; }
-        public DateTime? InscriptionDate { get; set; }
-        public string? Category { get; set; }
+        public int? saison { get; set; }
+        public string? date { get; set; }
+        public int? Category { get; set; }
     }
 }

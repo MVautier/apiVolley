@@ -40,6 +40,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public string? Signature { get; set; }
         public List<DtoDocument>? Documents { get; set; }
         public List<DtoOrder> Orders { get; set; }
+        public List<DtoHisto> Histo { get; set; }
 
         // Champs saisis par l'admin
         public int? Saison { get; set; }
