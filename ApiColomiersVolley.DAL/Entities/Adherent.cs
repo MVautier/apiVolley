@@ -78,6 +78,8 @@ namespace ApiColomiersVolley.DAL.Entities
         public bool? ImageRight { get; set; }
         [Column("signature", TypeName = "varchar(100)")]
         public string? Signature { get; set; }
+        [Column("histo", TypeName = "varchar(4000)")]
+        public string? Histo { get; set; }
 
         public virtual Section Section { get; set; }
         public virtual Category Category { get; set; }
