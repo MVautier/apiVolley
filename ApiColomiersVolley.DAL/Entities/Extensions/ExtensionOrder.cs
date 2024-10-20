@@ -21,6 +21,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Id = order.IdOrder,
                 IdPaiement= order.IdPaiement,
                 IdAdherent = order.IdAdherent,
+                Saison = order.Saison,
                 Date = order.Date,
                 CotisationC3L = order.CotisationC3L,
                 Total = order.Total,
@@ -49,6 +50,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 IdOrder = order.Id,
                 IdPaiement = order.IdPaiement,
                 IdAdherent = order.IdAdherent,
+                Saison = order.Saison,
                 Date = order.Date,
                 CotisationC3L = order.CotisationC3L,
                 Total = order.Total,
@@ -76,6 +78,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             {
                 IdPaiement = order.IdPaiement,
                 IdAdherent = order.IdAdherent,
+                Saison = order.Saison,
                 Date = order.Date,
                 CotisationC3L = order.CotisationC3L,
                 Total = order.Total,
@@ -97,6 +100,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             source.IdOrder = order.Id;
             source.IdPaiement = order.IdPaiement;
             source.IdAdherent = order.IdAdherent;
+            source.Saison = order.Saison;
             source.Date = order.Date;
             source.CotisationC3L = order.CotisationC3L; 
             source.Total = order.Total;

@@ -1,4 +1,5 @@
-﻿using ApiColomiersVolley.BLL.Core.Models.Generic;
+﻿using ApiColomiersVolley.BLL.Core.Models.Enums;
+using ApiColomiersVolley.BLL.Core.Models.Generic;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Repositories;
 using ApiColomiersVolley.DAL.Entities;
@@ -89,9 +90,7 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
         private async Task<IQueryable<Adherent>> GetFilteredAdherents(AdherentFilter? filter)
         {
-
             var adherents = GetAll();
-
             if (filter != null)
             {
                 var now = DateTime.Now;
@@ -103,19 +102,34 @@ namespace ApiColomiersVolley.DAL.DataProviders
                     adherents = adherents.Where(a => a.Saison == filter.Saison);
                 }
 
-                if (filter.HasPaid.HasValue)
+                if (filter.Payment.HasValue)
                 {
-                    var ids = await _db.Orders.Select(o => o.IdAdherent).ToListAsync();
-                    if (ids.Any())
+                    var query = from a in adherents
+                                join o in _db.Orders on a.IdAdherent equals o.IdAdherent
+                                where a.Saison == o.Saison
+                                select a.IdAdherent;
+                    var query2 = from a in adherents
+                                 join o in _db.Orders on a.IdParent equals o.IdAdherent
+                                 where a.Saison == o.Saison
+                                 select a.IdParent;
+                    switch (filter.Payment.Value)
                     {
-                        if (filter.HasPaid.Value)
-                        {
-                            adherents = adherents.Where(a => (ids.Contains(a.IdAdherent) || (a.IdParent.HasValue && ids.Contains(a.IdParent.Value))) && a.Payment == "Terminé");
-                        }
-                        else
-                        {
-                            adherents = adherents.Where(a => !ids.Contains(a.IdAdherent) && a.Payment == "En attente");
-                        }
+                        case EnumPayment.Termine:
+                            adherents = adherents.Where(a =>
+                            (query.Contains(a.IdAdherent) || query2.Contains(a.IdParent))
+                            && a.Payment == "Terminé");
+                            break;
+                        case EnumPayment.Attente:
+                            adherents = adherents.Where(a => 
+                            !(query.Contains(a.IdAdherent) || query2.Contains(a.IdParent))
+                            && a.Payment == "En attente");
+                            break;
+                        case EnumPayment.Manuel:
+                            adherents = adherents.Where(a => a.Payment == "Manuel");
+                            break;
+                        case EnumPayment.Autre:
+                            adherents = adherents.Where(a => a.Payment != "Terminé" && a.Payment != "En attente" && a.Payment != "Manuel");
+                            break;
                     }
                 }
 
@@ -150,6 +164,7 @@ namespace ApiColomiersVolley.DAL.DataProviders
                 list = sorting.Field switch
                 {
                     "IdAdherent" => sorting.ApplyExpressions(list, x => x.IdAdherent),
+                    "Saison" => sorting.ApplyExpressions(list, x => x.Saison),
                     "BirthdayDate" => sorting.ApplyExpressions(list, x => x.BirthdayDate),
                     "InscriptionDate" => sorting.ApplyExpressions(list, x => x.InscriptionDate),
                     "CertificateDate" => sorting.ApplyExpressions(list, x => x.CertificateDate),

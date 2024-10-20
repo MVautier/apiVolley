@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApiColomiersVolley.BLL.Core.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace ApiColomiersVolley.BLL.Core.Models.Generic
 {
     public class AdherentFilter
     {
-        public bool? HasPaid { get; set; }
+        public EnumPayment? Payment { get; set; }
         public bool? HasPhoto { get; set; }
         public bool? HasLicence { get; set; }
         public int? IdSection { get; set; }

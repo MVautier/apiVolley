@@ -18,6 +18,8 @@ namespace ApiColomiersVolley.DAL.Entities
         public int IdPaiement { get; set; }
         [Column("id_adherent")]
         public int IdAdherent { get; set; }
+        [Column("saison")]
+        public int Saison { get; set; }
         [Column("date")]
         public DateTime? Date { get; set; }
         [Column("cotisation_c3l")]

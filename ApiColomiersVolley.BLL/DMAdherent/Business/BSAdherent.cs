@@ -222,6 +222,11 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                                 order.IdAdherent = result.IdAdherent;
                             }
 
+                            if (order.Saison == 0 && result.Saison.HasValue)
+                            {
+                                order.Saison = result.Saison.Value;
+                            }
+
                             await _orderRepo.AddOrUpdate(order);
                         }
                         
