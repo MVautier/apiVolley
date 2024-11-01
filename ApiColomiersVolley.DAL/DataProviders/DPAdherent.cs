@@ -173,6 +173,7 @@ namespace ApiColomiersVolley.DAL.DataProviders
                     "LastName" => sorting.ApplyExpressions(list, x => !string.IsNullOrEmpty(x.LastName) ? x.LastName.ToLower() : ""),
                     "PostalCode" => sorting.ApplyExpressions(list, x => x.PostalCode),
                     "Payment" => sorting.ApplyExpressions(list, x => x.Payment),
+                    "PaymentComment" => sorting.ApplyExpressions(list, x => x.PaymentComment),
                     "Category" => sorting.ApplyExpressions(list, x => x.Category.Code ?? ""),
                     "Section" => sorting.ApplyExpressions(list, x => x.Section.Libelle ?? ""),
                     "City" => sorting.ApplyExpressions(list, x => x.City),
