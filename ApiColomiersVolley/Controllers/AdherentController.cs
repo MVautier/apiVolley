@@ -103,7 +103,12 @@ namespace ApiColomiersVolley.Controllers
         public async Task<ActionResult> GetDocuments([FromBody] AdherentFilter filter,[FromQuery] string type)
         {
             var file = await _bsAdherent.GetDocuments(filter, type);
-            return File(file.Content, file.Type, file.Name);
+            if (file != null)
+            {
+                return File(file.Content, file.Type, file.Name);
+            }
+
+            return null;
         }
 
 
