@@ -48,14 +48,9 @@ namespace ApiColomiersVolley.Controllers
         /// <summary>
         /// Gets a paged adherents list
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="filter"></param>
-        /// <param name="filterColumn"></param>
-        /// <param name="filterOperator"></param>
         /// <param name="sort"></param>
         /// <param name="sortColumn"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
         /// <param name="page"></param>
         /// <param name="size"></param>
         /// <response code="200">Success / Succès de la requête</response>
@@ -75,6 +70,22 @@ namespace ApiColomiersVolley.Controllers
             var pagination = new Pagination { Page = page, Size = size };
             var sorting = new Sorting { Field = sortColumn, OrderAsc = sort == "asc" };
             return await _bsAdherent.GetPagedListe(filter, sorting, pagination);
+        }
+
+        /// <summary>
+        /// Search for an adherent
+        /// </summary>
+        /// <param name="search"></param>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpPost]
+        [Route("search")]
+        public async Task<DtoAdherent> Search([FromBody] AdherentSearch search)
+        {
+            return await _bsAdherent.Search(search);
         }
 
         /// <summary>
@@ -113,6 +124,21 @@ namespace ApiColomiersVolley.Controllers
         }
 
         /// <summary>
+        /// Gets stats on all adherents
+        /// </summary>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpGet]
+        [Route("stats")]
+        public async Task<IEnumerable<DtoStat>> GetStats()
+        {
+            return await _bsAdherent.GetStats();
+        }
+
+        /// <summary>
         /// Gets all adherents
         /// </summary>
         /// <response code="200">Success / Succès de la requête</response>
@@ -121,7 +147,22 @@ namespace ApiColomiersVolley.Controllers
         /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
         /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
         [HttpPost]
-        [Route("search")]
+        [Route("orders")]
+        public async Task<IEnumerable<DtoOrderFull>> GetOrders([FromBody] OrderFilter search)
+        {
+            return await _bsAdherent.GetOrders(search);
+        }
+
+        /// <summary>
+        /// Gets all adherents
+        /// </summary>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpPost]
+        [Route("searchByName")]
         public async Task<IEnumerable<DtoAdherent>> GetByName([FromBody] SearchAdherent demand)
         {
             return await _bsAdherent.SearchAdherents(demand.Name, demand.PostalCode);

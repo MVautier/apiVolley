@@ -41,13 +41,22 @@ namespace ApiColomiersVolley.DAL.DataProviders
             return (await GetAll().Where(o => o.IdAdherent == idAdherent).ToListAsync()).ToDtoOrder();
         }
 
-        public async Task<List<DtoOrder>> GetByDateRange(DateTime start, DateTime? end)
+        public async Task<List<DtoOrder>> GetByDateRange(DateTime? start, DateTime? end)
         {
             if (end == null)
             {
                 end = DateTime.Now.AddDays(1);
             }
-            return (await GetAll().Where(o => o.Date >= start && o.Date < end).ToListAsync()).ToDtoOrder();
+
+            if (start.HasValue)
+            {
+                return (await GetAll().Where(o => o.Date >= start.Value && o.Date < end).ToListAsync()).ToDtoOrder();
+            }
+            else
+            {
+                return (await GetAll().Where(o => o.Date < end).ToListAsync()).ToDtoOrder();
+            }
+            
         }
 
         public async Task<DtoOrder> AddOrUpdate(DtoOrder order)

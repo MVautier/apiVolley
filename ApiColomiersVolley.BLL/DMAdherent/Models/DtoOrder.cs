@@ -9,10 +9,10 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
 {
     public class DtoOrder
     {
-        public int Id { get; set; }
-        public int IdPaiement { get; set; }
-        public int IdAdherent { get; set; }
-        public int Saison { get; set; }
+        public int? Id { get; set; }
+        public int? IdPaiement { get; set; }
+        public int? IdAdherent { get; set; }
+        public int? Saison { get; set; }
         public DateTime? Date { get; set; }
         public int? CotisationC3L { get; set; }
         public int? Total { get; set; }

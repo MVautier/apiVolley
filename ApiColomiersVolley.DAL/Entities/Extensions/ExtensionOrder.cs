@@ -40,17 +40,17 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
 
         internal static Order ToOrder(this Models.DtoOrder order)
         {
-            if (order == null)
+            if (order == null || !order.Id.HasValue || !order.IdPaiement.HasValue || !order.IdAdherent.HasValue || !order.Saison.HasValue)
             {
                 return null;
             }
 
             return new Order
             {
-                IdOrder = order.Id,
-                IdPaiement = order.IdPaiement,
-                IdAdherent = order.IdAdherent,
-                Saison = order.Saison,
+                IdOrder = order.Id.Value,
+                IdPaiement = order.IdPaiement.Value,
+                IdAdherent = order.IdAdherent.Value,
+                Saison = order.Saison.Value,
                 Date = order.Date,
                 CotisationC3L = order.CotisationC3L,
                 Total = order.Total,
@@ -69,16 +69,16 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
 
         internal static Order ToOrderAdd(this Models.DtoOrder order)
         {
-            if (order == null)
+            if (order == null || !order.IdPaiement.HasValue || !order.IdAdherent.HasValue || !order.Saison.HasValue)
             {
                 return null;
             }
 
             return new Order
             {
-                IdPaiement = order.IdPaiement,
-                IdAdherent = order.IdAdherent,
-                Saison = order.Saison,
+                IdPaiement = order.IdPaiement.Value,
+                IdAdherent = order.IdAdherent.Value,
+                Saison = order.Saison.Value,
                 Date = order.Date,
                 CotisationC3L = order.CotisationC3L,
                 Total = order.Total,
@@ -92,15 +92,15 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
 
         internal static Order ToOrder(this Models.DtoOrder order, Order source)
         {
-            if (order == null)
+            if (order == null || !order.Id.HasValue || !order.IdPaiement.HasValue || !order.IdAdherent.HasValue || !order.Saison.HasValue)
             {
                 return null;
             }
 
-            source.IdOrder = order.Id;
-            source.IdPaiement = order.IdPaiement;
-            source.IdAdherent = order.IdAdherent;
-            source.Saison = order.Saison;
+            source.IdOrder = order.Id.Value;
+            source.IdPaiement = order.IdPaiement.Value;
+            source.IdAdherent = order.IdAdherent.Value;
+            source.Saison = order.Saison.Value;
             source.Date = order.Date;
             source.CotisationC3L = order.CotisationC3L; 
             source.Total = order.Total;

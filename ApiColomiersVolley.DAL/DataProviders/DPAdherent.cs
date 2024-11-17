@@ -75,6 +75,11 @@ namespace ApiColomiersVolley.DAL.DataProviders
             }
         }
 
+        public async Task<IEnumerable<DtoAdherent>> GetByIds(List<int> ids)
+        {
+            return (await GetAll().Where(a => ids.Contains(a.IdAdherent)).ToListAsync()).ToDtoAdherent();
+        }
+
         public async Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting? sorting, Pagination? pagination)
         {
             var adherents = await GetFilteredAdherents(filter);
@@ -86,6 +91,56 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
             IQueryable<Adherent> paginated = pagination != null ? pagination.Paginate(adherents) : adherents;
             return new PagedList<DtoAdherent>(paginated.ToDtoAdherent().ToList(), adherents.Count());
+        }
+
+        public async Task<DtoAdherent> Search(AdherentSearch search)
+        {
+            var adherents = GetAll();
+            if (search != null)
+            {
+                var filters = new List<DynamicFilter>();
+                if (!string.IsNullOrEmpty(search.nom))
+                {
+                    filters.Add(new DynamicFilter
+                    {
+                        Field = "LastName",
+                        Operator = "Equals",
+                        Value = search.nom
+                    });
+                }
+
+                if (!string.IsNullOrEmpty(search.prenom))
+                {
+                    filters.Add(new DynamicFilter
+                    {
+                        Field = "FirstName",
+                        Operator = "Equals",
+                        Value = search.prenom
+                    });
+                }
+
+                var predicate = ExpressionBuilder.GetExpression<Adherent>(filters);
+                if (predicate != null)
+                {
+                    adherents = adherents.Where(predicate);
+                }
+
+                if (search.birthdayDate.HasValue)
+                {
+                    adherents = adherents.Where(a => a.BirthdayDate.HasValue 
+                    && a.BirthdayDate.Value.Year == search.birthdayDate.Value.Year
+                    && a.BirthdayDate.Value.Month == search.birthdayDate.Value.Month
+                    && a.BirthdayDate.Value.Day == search.birthdayDate.Value.Day);
+                }
+
+                if (adherents.Any()) 
+                {
+                    var adherent = adherents.OrderByDescending(a => a.IdAdherent).First();
+                    return adherent.ToDtoAdherent();
+                }
+            }
+
+            return null;
         }
 
         private async Task<IQueryable<Adherent>> GetFilteredAdherents(AdherentFilter? filter)

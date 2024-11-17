@@ -51,6 +51,11 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             return results;
         }
 
+        public async Task<DtoAdherent> Search(AdherentSearch search)
+        {
+            return await _adherentRepo.Search(search);
+        }
+
         public async Task<PagedList<DtoAdherent>> GetPagedListe(AdherentFilter filter, Sorting sort, Pagination pager)
         {
             var result = await _adherentRepo.GetPagedAdherents(filter, sort, pager);
@@ -93,6 +98,79 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             }
 
             return result;
+        }
+
+        public async Task<List<DtoStat>> GetStats()
+        {
+            List<DtoStat> stats = new List<DtoStat>();
+            IEnumerable<DtoAdherent> adherents = await _adherentRepo.GetAdherents();
+            stats.Add(new DtoStat { type = "geo", label = "Colomiers", value = adherents.Where(a => a.PostalCode == "31770").Count() });
+            stats.Add(new DtoStat { type = "geo", label = "Externe", value = adherents.Where(a => a.PostalCode != "31770").Count() });
+
+            stats.Add(new DtoStat { type = "category", label = "Compétition", value = adherents.Where(a => a.Category == "C").Count() });
+            stats.Add(new DtoStat { type = "category", label = "Loisir", value = adherents.Where(a => a.Category == "L").Count() });
+            stats.Add(new DtoStat { type = "category", label = "Enfants", value = adherents.Where(a => a.Category == "E").Count() });
+            return stats;
+        }
+
+        public async Task<List<DtoOrderFull>> GetOrders(OrderFilter search)
+        { 
+            List<DtoOrderFull> orders = new List<DtoOrderFull>();
+            List<DtoOrderFull> ordersHello = new List<DtoOrderFull>();
+            List<DtoOrderFull> ordersManual = new List<DtoOrderFull>();
+            IEnumerable<DtoAdherent> adherents = await _adherentRepo.GetAdherents();
+            
+            var commandes = await _orderRepo.Get();
+            foreach (var adherent in adherents)
+            {
+                if (adherent.Payment == "Terminé" || adherent.Payment == "En attente" || adherent.Payment == "Manuel")
+                {
+                    var membres = adherents.Where(a => a.IdParent == adherent.IdAdherent && a.Saison == adherent.Saison);
+                    if (adherent.Payment == "Terminé" || adherent.Payment == "En attente")
+                    {
+                        // Paiements Helloasso
+                        var cmds = commandes.Where(c => c.IdAdherent == adherent.IdAdherent);
+                        if (cmds.Any())
+                        {
+                            foreach (var cmd in cmds)
+                            {
+                                if (search.start.HasValue && search.end.HasValue && cmd.Date >= search.start.Value && cmd.Date <= search.end.Value)
+                                {
+                                    ordersHello.Add(new DtoOrderFull(adherent, cmd, membres));
+                                }
+                                else if (search.season.HasValue && (search.season.Value == 0 || cmd.Saison == search.season.Value))
+                                {
+                                    ordersHello.Add(new DtoOrderFull(adherent, cmd, membres));
+                                }
+                            }
+                        }
+                    }
+                    else if (adherent.Payment == "Manuel")
+                    {
+                        // Paiements manuels
+                        if (search.start.HasValue && search.end.HasValue && adherent.InscriptionDate.HasValue && adherent.InscriptionDate.Value >= search.start.Value && adherent.InscriptionDate.Value <= search.end.Value)
+                        {
+                            ordersManual.Add(new DtoOrderFull(adherent, null, membres));
+                        }
+                        else if (search.season.HasValue && (search.season.Value == 0 || adherent.Saison == search.season.Value))
+                        {
+                            ordersManual.Add(new DtoOrderFull(adherent, null, membres));
+                        }
+                    }
+                } 
+            }
+
+            if (ordersHello.Any())
+            {
+                orders.AddRange(ordersHello.OrderBy(o => o.Date?.ToString("yyyy-MM-dd")).ThenBy(o => o.LastName.ToLower()));
+            }
+
+            if (ordersManual.Any())
+            {
+                orders.AddRange(ordersManual.OrderBy(o => o.InscriptionDate?.ToString("yyyy-MM-dd")).ThenBy(o => o.LastName.ToLower()));
+            }
+
+            return orders;
         }
 
         public async Task<FileModel> GetDocuments(AdherentFilter filter, string type)

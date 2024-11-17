@@ -13,6 +13,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Repositories
         Task<DtoOrder> GetById(int id);
         Task<List<DtoOrder>> GetByAdherent(int idAdherent);
         Task<DtoOrder> AddOrUpdate(DtoOrder order);
-        Task<List<DtoOrder>> GetByDateRange(DateTime start, DateTime? end);
+        Task<List<DtoOrder>> GetByDateRange(DateTime? start, DateTime? end);
     }
 }

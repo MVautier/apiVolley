@@ -19,5 +19,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces
         Task<FileModel> GetDocuments(AdherentFilter filter, string type);
         Task<FileModel> GetEmailFile(AdherentFilter filter);
         Task<FileModel> GetOrderFile(AdherentFilter filter);
+        Task<DtoAdherent> Search(AdherentSearch search);
+        Task<List<DtoOrderFull>> GetOrders(OrderFilter search);
+        Task<List<DtoStat>> GetStats();
     }
 }
