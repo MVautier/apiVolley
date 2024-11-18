@@ -244,6 +244,5 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-/KaliBtoB/Content/style-min-1.0.06.css
-/KaliBtoB/Scripts/minify/AjaxManager-min-1.0.06.js
-/KaliBtoB/Scripts/minify/Default-min-1.0.06.js
+/ApiColomiersVolley/wwwroot/adherents/
+/ApiColomiersVolley/wwwroot/adherents_old/

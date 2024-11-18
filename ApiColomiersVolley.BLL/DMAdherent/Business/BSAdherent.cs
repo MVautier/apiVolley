@@ -65,10 +65,11 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 foreach(var adherent in result.Datas)
                 {
                     List<DtoDocument> docs = new List<DtoDocument>();
-                    if (adherent.Uid != null)
+                    if (adherent.Uid != null && adherent.Saison.HasValue)
                     {
                         var paths = _fileManager.InitAdherentPaths(adherent.Uid, false);
-                        var files = _fileManager.FindFiles(paths.BasePath);
+                        var path = Path.Combine(paths.BasePath, adherent.Saison.Value.ToString());
+                        var files = _fileManager.FindFiles(path);
                         if (files != null && files.Any())
                         {
                             foreach ( var file in files)
@@ -186,6 +187,40 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             return null;
         }
 
+        public async Task<bool> RepairDocs()
+        {
+            var adherents = await _adherentRepo.GetAdherents();
+            foreach(var adherent in adherents)
+            {
+                if (adherent.Uid != null && adherent.FirstName != null && adherent.LastName != null && adherent.BirthdayDate != null)
+                {
+                    var paths = _fileManager.InitAdherentPaths(adherent.Uid, false);
+                    var files = _fileManager.FindFiles(paths.BasePath);
+                    List<string> toRemove = new List<string>();
+                    if (files != null && files.Any())
+                    {
+                        foreach (var file in files)
+                        {
+                            var date = file.LastWriteTime;
+                            var year = date.Year;
+                            var month = date.Month;
+                            var filename = file.Name;
+
+                            var destPath = Path.Combine(paths.BasePath, (month < 6 ? (year - 1) : year).ToString());
+                            if (!Directory.Exists(destPath))
+                            {
+                                Directory.CreateDirectory(destPath);
+                            }
+
+                            File.Move(file.FullName, Path.Combine(destPath, filename));
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private List<DtoDocument> GetDocuments(PagedList<DtoAdherent> list, string type)
         {
             List<DtoDocument> docs = new List<DtoDocument>();
@@ -193,10 +228,10 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             {
                 foreach (var adherent in list.Datas)
                 {
-                    if (adherent.Uid != null && adherent.FirstName != null && adherent.LastName != null && adherent.BirthdayDate != null)
+                    if (adherent.Uid != null && adherent.FirstName != null && adherent.LastName != null && adherent.BirthdayDate != null && adherent.Saison.HasValue)
                     {
                         var paths = _fileManager.InitAdherentPaths(adherent.Uid, false);
-                        var files = _fileManager.FindFiles(paths.BasePath);
+                        var files = _fileManager.FindFiles(Path.Combine(paths.BasePath, adherent.Saison.Value.ToString()));
                         if (files != null && files.Any())
                         {
                             foreach (var file in files)
@@ -206,7 +241,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                                 {
                                     docs.Add(new DtoDocument
                                     {
-                                        filename = Path.Combine(adherent.Uid, file.Name),
+                                        filename = Path.Combine(adherent.Uid, adherent.Saison.Value.ToString(), file.Name),
                                         customName = GetDocumentName(adherent, file.Name),
                                         type = type,
                                         blob = null,
@@ -225,8 +260,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
 
         private string GetDocumentName(DtoAdherent adherent, string filename)
         {
-            string name = adherent.FirstName.ToLower().Replace(" ", "-") + "-" + 
-                adherent.LastName.ToLower().Replace(" ", "-") + "-" +
+            string name = adherent.LastName.ToLower().Replace(" ", "-") + "-" + 
+                adherent.FirstName.ToLower().Replace(" ", "-") + "-" +
                 LeadZero(adherent.BirthdayDate.Value.Day) + "-" + LeadZero(adherent.BirthdayDate.Value.Month) + "-" + adherent.BirthdayDate.Value.Year.ToString() + "-" +  
                 filename;
             return name;

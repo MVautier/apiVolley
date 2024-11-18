@@ -22,5 +22,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces
         Task<DtoAdherent> Search(AdherentSearch search);
         Task<List<DtoOrderFull>> GetOrders(OrderFilter search);
         Task<List<DtoStat>> GetStats();
+        Task<bool> RepairDocs();
     }
 }
