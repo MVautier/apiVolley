@@ -13,5 +13,6 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso.Models
         public DateTime date { get; set; }
         public int total { get; set; }
         public Client client { get; set; }
+        public string token { get; set; }
     }
 }

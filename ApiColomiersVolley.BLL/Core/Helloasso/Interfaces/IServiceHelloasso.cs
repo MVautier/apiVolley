@@ -11,7 +11,7 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso.Interfaces
     public interface IServiceHelloasso
     {
         Task<PostIntentResult> SendCheckout(Cart cart);
-        Task<GetIntentResult> GetReceiptUrl(string id);
+        Task<GetIntentResult> GetReceiptUrl(string id, HelloassoToken token);
         Task<InMemoryToken> GetTokenByApi();
     }
 }

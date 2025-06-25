@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using RestSharp;
 
 namespace ApiColomiersVolley.BLL.Core.Tools
 {
@@ -127,6 +128,18 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             response.EnsureSuccessStatusCode();
             var responseBody = await response.Content.ReadAsAsync<T>();
             return responseBody;
+        }
+
+        public async Task<T> GetToken<T>(string fournisseur, string route, string clientId, string clientSecret)
+        {
+            var options = new RestClientOptions(route);
+            var client = new RestClient(options);
+            var request = new RestRequest("");
+            request.AddHeader("accept", "application/json");
+            request.AddParameter("grant_type", "client_credentials");
+            request.AddParameter("client_id", clientId);
+            request.AddParameter("client_secret", clientSecret);
+            return await client.PostAsync<T>(request);
         }
 
         /// <summary>
