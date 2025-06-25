@@ -1,4 +1,5 @@
 ﻿using ApiColomiersVolley.BLL.Core.Helloasso.Models;
+using ApiColomiersVolley.BLL.Core.Tools.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso.Interfaces
     {
         Task<PostIntentResult> SendCheckout(Cart cart);
         Task<GetIntentResult> GetReceiptUrl(string id);
+        Task<InMemoryToken> GetTokenByApi();
     }
 }

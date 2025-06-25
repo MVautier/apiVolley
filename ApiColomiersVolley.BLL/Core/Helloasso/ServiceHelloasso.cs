@@ -76,7 +76,7 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
             return tokenInMemory.Token;
         }
 
-        private async Task<InMemoryToken> GetTokenByApi()
+        public async Task<InMemoryToken> GetTokenByApi()
         {
             InMemoryToken tokenInMemory = null;
             var config = _config.GetSection(FOURNISSEUR);

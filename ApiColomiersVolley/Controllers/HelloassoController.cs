@@ -1,6 +1,7 @@
 ﻿using ApiColomiersVolley.BLL.Core.Helloasso.Interfaces;
 using ApiColomiersVolley.BLL.Core.Helloasso.Models;
 using ApiColomiersVolley.BLL.Core.Models.Generic;
+using ApiColomiersVolley.BLL.Core.Tools.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Business;
 using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
@@ -59,6 +60,30 @@ namespace ApiColomiersVolley.Controllers
             try
             {
                 return await _serviceHello.GetReceiptUrl(id);
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets a paged adherents list
+        /// </summary>
+        /// <param name="id"></param>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpGet]
+        [Route("token")]
+        public async Task<InMemoryToken> GetToken()
+        {
+            try
+            {
+                return await _serviceHello.GetTokenByApi();
             }
             catch (Exception ex)
             {
