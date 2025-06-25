@@ -14,7 +14,8 @@ namespace ApiColomiersVolley
             services.AddScoped<IOAuthHelper, OAuthHelper>();
             services.AddDbContext<ColomiersVolleyContext>(options =>
             options.UseMySQL(configuration.GetConnectionString("ColomiersVolley")));
-
+            services.AddMemoryCache();
+            services.AddHttpClient();
             services.AddBusinessLocator();
             services.AddDataLayerLocator();
             services.AddHttpContextAccessor();

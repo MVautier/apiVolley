@@ -15,6 +15,8 @@ using Cartegie.BLL.CreationDeFichiers.Interface;
 using Cartegie.BLL.CreationDeFichiers;
 using ApiColomiersVolley.BLL.DMUser.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMUser.Business;
+using ApiColomiersVolley.BLL.Core.Helloasso.Interfaces;
+using ApiColomiersVolley.BLL.Core.Helloasso;
 
 namespace ApiColomiersVolley.BLL
 {
@@ -33,6 +35,9 @@ namespace ApiColomiersVolley.BLL
             services.AddScoped<IBSDocument, BSDocument>();
             services.AddScoped<IBSUser, BSUser>();
             services.AddScoped<IBSRole, BSRole>();
+            services.AddScoped<IBsRequestApi, BsRequestApi>();
+            services.AddScoped<IServiceHelloasso, ServiceHelloasso>();
+            services.AddScoped<IBsToken, BsToken>();
 
             // Core tools
             services.AddScoped<IJWTFactory, JWTFactory>();
