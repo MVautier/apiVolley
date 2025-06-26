@@ -116,7 +116,6 @@ namespace ApiColomiersVolley.BLL.Core.Tools
         /// <typeparam name="T"></typeparam>
         /// <param name="fournisseur"></param>
         /// <param name="route"></param>
-        /// <param name="token"></param>
         /// <param name="data"></param>
         /// <returns></returns>
         public async Task<T> PostFormData<T>(string fournisseur, string route, FormUrlEncodedContent data)
@@ -130,18 +129,6 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             return responseBody;
         }
 
-        public async Task<T> GetToken<T>(string fournisseur, string route, string clientId, string clientSecret)
-        {
-            var options = new RestClientOptions(route);
-            var client = new RestClient(options);
-            var request = new RestRequest("");
-            request.AddHeader("accept", "application/json");
-            request.AddParameter("grant_type", "client_credentials");
-            request.AddParameter("client_id", clientId);
-            request.AddParameter("client_secret", clientSecret);
-            return await client.PostAsync<T>(request);
-        }
-
         /// <summary>
         /// Effectue un requête POST au format FormData en fournissant un Bearer token
         /// </summary>
@@ -151,11 +138,14 @@ namespace ApiColomiersVolley.BLL.Core.Tools
         /// <param name="token"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public async Task<T> PostFormDataWithToken<T>(string fournisseur, string route, string token, FormUrlEncodedContent data)
+        public async Task<T> PostFormDataWithToken<T>(string fournisseur, string route, string? token, FormUrlEncodedContent data)
         {
             var client = GetClient(fournisseur);
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, route);
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (!string.IsNullOrEmpty(token))
+            {
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
             requestMessage.Content = data;
             var response = await client.SendAsync(requestMessage);
             response.EnsureSuccessStatusCode();

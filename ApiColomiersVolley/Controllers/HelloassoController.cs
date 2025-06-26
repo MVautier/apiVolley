@@ -53,13 +53,13 @@ namespace ApiColomiersVolley.Controllers
         /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
         /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
         /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
-        [HttpPost]
+        [HttpGet]
         [Route("receipt/{id}")]
-        public async Task<GetIntentResult> GetReceiptUrl(string id, [FromBody] HelloassoToken token)
+        public async Task<GetIntentResult> GetReceiptUrl(string id)
         {
             try
             {
-                return await _serviceHello.GetReceiptUrl(id, token);
+                return await _serviceHello.GetReceiptUrl(id);
             }
             catch (Exception ex)
             {

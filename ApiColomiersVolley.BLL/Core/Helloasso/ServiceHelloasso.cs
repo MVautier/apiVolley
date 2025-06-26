@@ -5,13 +5,6 @@ using ApiColomiersVolley.BLL.Core.Tools.Models;
 using ApiColomiersVolley.BLL.DMAuthentication.Models;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RestSharp;
-using Newtonsoft.Json;
 
 namespace ApiColomiersVolley.BLL.Core.Helloasso
 {
@@ -36,9 +29,9 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
         {
             var config = _config.GetSection(FOURNISSEUR);
             string route = config["apiServer"] + "/organizations/" + config["organizationSlug"] + "/checkout-intents";
-            //var token = await GetToken();
+            var token = await GetToken();
             PaymentRequest data = new PaymentRequest(cart, config["itemName"], config["basePath"]);
-            var result = await _requestApi.PostJsonWithToken<PostIntentResult>(FOURNISSEUR, route, cart.token, data);
+            var result = await _requestApi.PostJsonWithToken<PostIntentResult>(FOURNISSEUR, route, token, data);
             return result;
 
 
@@ -55,12 +48,12 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
 
         }
 
-        public async Task<GetIntentResult> GetReceiptUrl(string id, HelloassoToken token)
+        public async Task<GetIntentResult> GetReceiptUrl(string id)
         {
             var config = _config.GetSection(FOURNISSEUR);
             string route = config["apiServer"] + "/organizations/" + config["organizationSlug"] + "/checkout-intents/" + id;
-            //var token = await GetToken();
-            var result = await _requestApi.CallWithToken<GetIntentResult>(FOURNISSEUR, route, token.access_token, HttpMethod.Get);
+            var token = await GetToken();
+            var result = await _requestApi.CallWithToken<GetIntentResult>(FOURNISSEUR, route, token, HttpMethod.Get);
             return result;
         }
 
@@ -103,14 +96,38 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
             var data = new FormUrlEncodedContent(dict);
             try
             {
-                //var result = await _requestApi.PostFormData<HelloassoToken>(FOURNISSEUR, config["authServer"] + "/token", data);
-                var result = await _requestApi.GetToken<HelloassoToken>(FOURNISSEUR, config["authServer"] + "/token", config["clientId"], config["clientSecret"]);
+                var result = await _requestApi.PostFormData<HelloassoToken>(FOURNISSEUR, config["authServer"] + "/token", data);
                 if (result != null)
                 {
                     DateTime expires = GetExpires(config);
                     tokenInMemory = _bsToken.StoreToken(FOURNISSEUR, result.access_token, result.refresh_token, expires);
                     return tokenInMemory;
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new UnauthorizedAccessException("Unable to obtain token", ex);
+            }
+
+            return null;
+        }
+
+        public async Task<InMemoryToken> GetTokenByApi2()
+        {
+            InMemoryToken tokenInMemory = null;
+            var config = _config.GetSection(FOURNISSEUR);
+            try
+            {
+                string route = config["authServer"] + "/token";
+                var options = new RestClientOptions(route);
+                var client = new RestClient(options);
+                var request = new RestRequest("");
+                request.AddHeader("accept", "application/json");
+                request.AddParameter("grant_type", "client_credentials");
+                request.AddParameter("client_id", config["clientId"]);
+                request.AddParameter("client_secret", config["clientSecret"]);
+                var response = await client.PostAsync<HelloassoToken>(request);
+                return null;
             }
             catch (Exception ex)
             {

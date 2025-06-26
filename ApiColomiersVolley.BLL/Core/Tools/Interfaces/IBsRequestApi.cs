@@ -13,7 +13,6 @@ namespace ApiColomiersVolley.BLL.Core.Tools.Interfaces
         Task<T> PostForm<T>(string fournisseur, string route, string clientId, string clientSecret);
         Task<T> PostJsonWithToken<T>(string fournisseur, string route, string token, object body, HttpStatusCode statusToCheck = HttpStatusCode.NoContent);
         Task<T> PostFormData<T>(string fournisseur, string route, FormUrlEncodedContent data);
-        Task<T> PostFormDataWithToken<T>(string fournisseur, string route, string token, FormUrlEncodedContent data);
-        Task<T> GetToken<T>(string fournisseur, string route, string clientId, string clientSecret);
+        Task<T> PostFormDataWithToken<T>(string fournisseur, string route, string? token, FormUrlEncodedContent data);
     }
 }
