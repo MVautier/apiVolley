@@ -77,19 +77,19 @@ namespace ApiColomiersVolley.Controllers
         /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
         /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
         /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
-        //[HttpGet]
-        //[Route("token")]
-        //public async Task<InMemoryToken> GetToken()
-        //{
-        //    try
-        //    {
-        //        return await _serviceHello.GetTokenByApi();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        string message = ex.Message;
-        //        throw;
-        //    }
-        //}
+        [HttpGet]
+        [Route("token")]
+        public async Task<InMemoryToken> GetToken()
+        {
+            try
+            {
+                return await _serviceHello.GetTokenByApi();
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                throw;
+            }
+        }
     }
 }
