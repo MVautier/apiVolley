@@ -13,6 +13,5 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso.Interfaces
         Task<PostIntentResult> SendCheckout(Cart cart);
         Task<GetIntentResult> GetReceiptUrl(string id);
         Task<InMemoryToken> GetTokenByApi();
-        Task<InMemoryToken> GetTokenByApi2();
     }
 }

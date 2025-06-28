@@ -2,8 +2,6 @@
 using ApiColomiersVolley.BLL.Core.Helloasso.Models;
 using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools.Models;
-using ApiColomiersVolley.BLL.DMAuthentication.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
 using System.Net;
@@ -35,23 +33,60 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
             PaymentRequest data = new PaymentRequest(cart, config["itemName"], config["basePath"]);
             var result = await _requestApi.PostJsonWithToken<PostIntentResult>(FOURNISSEUR, route, token, data);
             return result;
+            //PostIntentResult? result = null;
+            //var config = _config.GetSection(FOURNISSEUR);
+            //try
+            //{
 
+            //    var token = await GetToken();
+            //    string route = config["apiServer"] + "/organizations/" + config["organizationSlug"] + "/checkout-intents";
+            //    var client = GetClient(route);
+            //    var request = new RestRequest("");
+            //    request.AddHeader("accept", "application/json");
+            //    request.AddHeader("authorization", "Bearer " + token);
+            //    PaymentRequest data = new PaymentRequest(cart, config["itemName"], config["basePath"]);
+            //    //request.AddBody(data);
+            //    //string json = JsonConvert.SerializeObject(data);
+            //    request.AddStringBody("{\"containsDonation\":\"false\",\"totalAmount\":9300,\"initialAmount\":9300,\"itemName\":\"Adhésion CLLL - Section Voley-Ball\",\"backUrl\":\"https://localhost:4224/inscription?step=4&payment=cancel\",\"errorUrl\":\"https://localhost:4224/inscription?step=4&payment=error\",\"returnUrl\":\"https://localhost:4224/inscription?step=4&payment=success\"}", "application/json");
+            //    result = await client.PostAsync<PostIntentResult>(request);
+            //    if (result != null)
+            //    {
+            //        return result;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new UnauthorizedAccessException("Unable to post intent", ex);
+            //}
 
-
-
-            //var options = new RestClientOptions("https://api.helloasso.com/v5/organizations/dfggfffff/checkout-intents");
-            //var client = new RestClient(options);
-            //var request = new RestRequest("");
-            //request.AddHeader("accept", "application/json");
-            //request.AddHeader("authorization", "Bearer " + cart.token);
-            //request.AddStringBody(JsonConvert.SerializeObject(cart), "application/*+json");
-            //var response = await client.PostAsync<PostIntentResult>(request);
-            //return response;
-
+            //return null;
         }
 
         public async Task<GetIntentResult> GetReceiptUrl(string id)
         {
+            //GetIntentResult? result = null;
+            //var config = _config.GetSection(FOURNISSEUR);
+            //string route = config["apiServer"] + "/organizations/" + config["organizationSlug"] + "/checkout-intents/" + id;
+            //try
+            //{
+            //    var token = await GetToken();
+            //    var client = GetClient(route);
+            //    var request = new RestRequest("");
+            //    request.AddHeader("accept", "application/json");
+            //    request.AddHeader("authorization", "Bearer " + token);
+            //    result = await client.GetAsync<GetIntentResult>(request);
+            //    if (result != null)
+            //    {
+            //        return result;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new UnauthorizedAccessException("Unable to get intent", ex);
+            //}
+
+            //return null;
+
             var config = _config.GetSection(FOURNISSEUR);
             string route = config["apiServer"] + "/organizations/" + config["organizationSlug"] + "/checkout-intents/" + id;
             var token = await GetToken();
@@ -60,6 +95,18 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
         }
 
         #region token
+        private RestClient GetClient(string route)
+        {
+            var options = new RestClientOptions(route);
+            if (_config.GetValue<string>("Environment") == "production")
+            {
+                options.Proxy = new WebProxy("http://winproxy.server.lan:3128/", true);
+            }
+
+            var client = new RestClient(options);
+            return client;
+        }
+
         private async Task<string> GetToken()
         {
             var tokenInMemory = _bsToken.GetToken(FOURNISSEUR);
@@ -91,45 +138,11 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
         {
             InMemoryToken tokenInMemory = null;
             var config = _config.GetSection(FOURNISSEUR);
-            var dict = new Dictionary<string, string>();
-            dict.Add("client_id", config["clientId"]);
-            dict.Add("client_secret", config["clientSecret"]);
-            dict.Add("grant_type", "client_credentials");
-            var data = new FormUrlEncodedContent(dict);
-            try
-            {
-                var result = await _requestApi.PostFormData<HelloassoToken>(FOURNISSEUR, config["authServer"] + "/token", data);
-                if (result != null)
-                {
-                    DateTime expires = GetExpires(config);
-                    tokenInMemory = _bsToken.StoreToken(FOURNISSEUR, result.access_token, result.refresh_token, expires);
-                    return tokenInMemory;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new UnauthorizedAccessException("Unable to obtain token", ex);
-            }
-
-            return null;
-        }
-
-        public async Task<InMemoryToken> GetTokenByApi2()
-        {
-            InMemoryToken tokenInMemory = null;
-            var config = _config.GetSection(FOURNISSEUR);
             try
             {
                 string route = config["authServer"] + "/token";
-                var options = new RestClientOptions(route);
-                if (_config.GetValue<string>("Environment") == "production")
-                {
-                    options.Proxy = new WebProxy("http://winproxy.server.lan:3128/", true);
-                }
-                
-                var client = new RestClient(options);
+                var client = GetClient(route);
                 var request = new RestRequest("");
-                
                 request.AddHeader("accept", "application/json");
                 request.AddParameter("grant_type", "client_credentials");
                 request.AddParameter("client_id", config["clientId"]);
@@ -153,18 +166,18 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
         private async Task<InMemoryToken> RefreshToken(string refresh)
         {
             var config = _config.GetSection(FOURNISSEUR);
-            var dict = new Dictionary<string, string>();
-            dict.Add("client_id", config["clientId"]);
-            dict.Add("refresh_token", refresh);
-            dict.Add("grant_type", "refresh_token");
-            var data = new FormUrlEncodedContent(dict);
+            string route = config["authServer"] + "/token";
+            var client = GetClient(route);
+            var request = new RestRequest("");
+            request.AddHeader("accept", "application/json");
+            request.AddParameter("grant_type", "refresh_token");
             try
             {
-                var result = await _requestApi.PostFormData<HelloassoToken>(FOURNISSEUR, config["authServer"] + "/token", data);
-                if (result != null)
+                var response = await client.PostAsync<HelloassoToken>(request);
+                if (response != null)
                 {
                     DateTime expires = GetExpires(config);
-                    return _bsToken.StoreToken(FOURNISSEUR, result.access_token, result.refresh_token, expires);
+                    return _bsToken.StoreToken(FOURNISSEUR, response.access_token, response.refresh_token, expires);
                 }
             }
             catch (Exception ex)
@@ -173,6 +186,26 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
             }
 
             return null;
+            //var dict = new Dictionary<string, string>();
+            //dict.Add("client_id", config["clientId"]);
+            //dict.Add("refresh_token", refresh);
+            //dict.Add("grant_type", "refresh_token");
+            //var data = new FormUrlEncodedContent(dict);
+            //try
+            //{
+            //    var result = await _requestApi.PostFormData<HelloassoToken>(FOURNISSEUR, config["authServer"] + "/token", data);
+            //    if (result != null)
+            //    {
+            //        DateTime expires = GetExpires(config);
+            //        return _bsToken.StoreToken(FOURNISSEUR, result.access_token, result.refresh_token, expires);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    _mailManager.SendMailErreur(ex, "Unable to refresh token");
+            //}
+
+            //return null;
         }
 
         private DateTime GetExpires(IConfigurationSection config)

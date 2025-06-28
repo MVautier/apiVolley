@@ -31,7 +31,18 @@ namespace ApiColomiersVolley.BLL.Core.Tools
 
         private HttpClient GetClient(string fournisseur)
         {
-            var client = _clientFactory.CreateClient();
+            HttpClient client;
+            if (_config.GetValue<string>("Environment") == "production")
+            {
+                var proxiedHttpClientHandler = new HttpClientHandler() { UseProxy = true };
+                proxiedHttpClientHandler.Proxy = new WebProxy("http://winproxy.server.lan:3128/", true);
+                client = new HttpClient(proxiedHttpClientHandler);
+            }
+            else
+            {
+                client = _clientFactory.CreateClient();
+            }
+
             var config = _config.GetSection(fournisseur);
             Uri baseUri = new Uri(config["apiServer"]);
             client.BaseAddress = baseUri;
@@ -96,6 +107,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools
         public async Task<T> PostJsonWithToken<T>(string fournisseur, string route, string token, object body, HttpStatusCode statusToCheck = HttpStatusCode.NoContent)
         {
             var client = GetClient(fournisseur);
+            
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, route);
             requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var content = new StringContent(JsonConvert.SerializeObject(body), Encoding.Default, "application/json");
