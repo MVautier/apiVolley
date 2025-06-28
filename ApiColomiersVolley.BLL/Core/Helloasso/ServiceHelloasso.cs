@@ -3,8 +3,10 @@ using ApiColomiersVolley.BLL.Core.Helloasso.Models;
 using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools.Models;
 using ApiColomiersVolley.BLL.DMAuthentication.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
+using System.Net;
 
 namespace ApiColomiersVolley.BLL.Core.Helloasso
 {
@@ -120,14 +122,25 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
             {
                 string route = config["authServer"] + "/token";
                 var options = new RestClientOptions(route);
+                if (_config.GetValue<string>("Environment") == "production")
+                {
+                    options.Proxy = new WebProxy("http://winproxy.server.lan:3128/", true);
+                }
+                
                 var client = new RestClient(options);
                 var request = new RestRequest("");
+                
                 request.AddHeader("accept", "application/json");
                 request.AddParameter("grant_type", "client_credentials");
                 request.AddParameter("client_id", config["clientId"]);
                 request.AddParameter("client_secret", config["clientSecret"]);
                 var response = await client.PostAsync<HelloassoToken>(request);
-                return null;
+                if (response != null)
+                {
+                    DateTime expires = GetExpires(config);
+                    tokenInMemory = _bsToken.StoreToken(FOURNISSEUR, response.access_token, response.refresh_token, expires);
+                    return tokenInMemory;
+                }
             }
             catch (Exception ex)
             {

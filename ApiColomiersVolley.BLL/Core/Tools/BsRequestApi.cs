@@ -37,6 +37,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             client.BaseAddress = baseUri;
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.ConnectionClose = true;
+            
             return client;
         }
 

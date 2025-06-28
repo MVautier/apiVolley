@@ -83,7 +83,7 @@ namespace ApiColomiersVolley.Controllers
         {
             try
             {
-                return await _serviceHello.GetTokenByApi();
+                return await _serviceHello.GetTokenByApi2();
             }
             catch (Exception ex)
             {
