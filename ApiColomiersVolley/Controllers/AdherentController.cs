@@ -3,6 +3,8 @@ using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
 using ApiColomiersVolley.BLL.DMItem.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMItem.Models;
+using ApiColomiersVolley.BLL.DMParametres.Business.Interfaces;
+using ApiColomiersVolley.BLL.DMParametres.Models;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -22,13 +24,15 @@ namespace ApiColomiersVolley.Controllers
     {
         private readonly IBSAdherent _bsAdherent;
         private readonly IBSCategory _bsCategory;
+        private readonly IBSParametres _bsParametres;
 
         /// <summary>
         /// The class Constructor
-        public AdherentController(IBSAdherent bsAdherent, IBSCategory bsCategory)
+        public AdherentController(IBSAdherent bsAdherent, IBSCategory bsCategory, IBSParametres bsParametres)
         {
             _bsAdherent = bsAdherent;
             _bsCategory = bsCategory;
+            _bsParametres = bsParametres;
         }
 
         /// <summary>
@@ -114,7 +118,7 @@ namespace ApiColomiersVolley.Controllers
 
 
         /// <summary>
-        /// Gets all adherents
+        /// Gets all categories
         /// </summary>
         /// <response code="200">Success / Succès de la requête</response>
         /// <response code="204">No content / Aucune donnée</response>
@@ -126,6 +130,36 @@ namespace ApiColomiersVolley.Controllers
         public async Task<IEnumerable<DtoCategory>> GetCategories()
         {
             return await _bsCategory.GetListe();
+        }
+
+        /// <summary>
+        /// Gets parameters
+        /// </summary>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpGet]
+        [Route("parametres")]
+        public async Task<DtoParametres> GetParametres()
+        {
+            return await _bsParametres.Get();
+        }
+
+        /// <summary>
+        /// Sets parameters
+        /// </summary>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="204">No content / Aucune donnée</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpPost]
+        [Route("parametres")]
+        public async Task<DtoParametres> SetParametres(DtoParametres param)
+        {
+            return await _bsParametres.AddOrUpdate(param);
         }
 
         /// <summary>

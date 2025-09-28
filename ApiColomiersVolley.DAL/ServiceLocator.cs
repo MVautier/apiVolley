@@ -1,6 +1,7 @@
 ﻿using ApiColomiersVolley.BLL.DMAdherent.Repositories;
 using ApiColomiersVolley.BLL.DMAuthentication.Repositories;
 using ApiColomiersVolley.BLL.DMItem.Repositories;
+using ApiColomiersVolley.BLL.DMParametres.Repositories;
 using ApiColomiersVolley.BLL.DMUser.Repositories;
 using ApiColomiersVolley.DAL.DataProviders;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ namespace ApiColomiersVolley.DAL
             services.AddScoped<IDMCategoryRepo, DPCategory>();
             services.AddScoped<IDMRoleRepo, DPRole>();
             services.AddScoped<IDMOrderRepo, DPOrder>();
+            services.AddScoped<IDMParametresRepo, DPParametres>();
         }
     }
 }

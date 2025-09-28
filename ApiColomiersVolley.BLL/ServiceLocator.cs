@@ -17,6 +17,8 @@ using ApiColomiersVolley.BLL.DMUser.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMUser.Business;
 using ApiColomiersVolley.BLL.Core.Helloasso.Interfaces;
 using ApiColomiersVolley.BLL.Core.Helloasso;
+using ApiColomiersVolley.BLL.DMParametres.Business.Interfaces;
+using ApiColomiersVolley.BLL.DMParametres.Business;
 
 namespace ApiColomiersVolley.BLL
 {
@@ -38,6 +40,7 @@ namespace ApiColomiersVolley.BLL
             services.AddScoped<IBsRequestApi, BsRequestApi>();
             services.AddScoped<IServiceHelloasso, ServiceHelloasso>();
             services.AddScoped<IBsToken, BsToken>();
+            services.AddScoped<IBSParametres, BSParametres>();
 
             // Core tools
             services.AddScoped<IJWTFactory, JWTFactory>();

@@ -1,6 +1,8 @@
 ﻿using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Repositories;
+using ApiColomiersVolley.BLL.DMParametres.Business;
+using ApiColomiersVolley.BLL.DMParametres.Business.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -14,12 +16,14 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
     {
         private readonly IDMCategoryRepo _categRepo;
         private readonly IDMAdherentRepo _adhRepo;
+        private readonly IBSParametres _bsParametres;
         private readonly IConfiguration _config;
 
-        public BSCategory(IDMCategoryRepo categRepo, IDMAdherentRepo adhRepo, IConfiguration config)
+        public BSCategory(IDMCategoryRepo categRepo, IDMAdherentRepo adhRepo, IBSParametres bsParametres, IConfiguration config)
         {
             _categRepo = categRepo;
             _adhRepo = adhRepo;
+            _bsParametres = bsParametres;
             _config = config;
         }
 
@@ -28,12 +32,12 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             int year = DateTime.Now.Year;
             var ados = await _adhRepo.GetAdherentsByCategoryAndSeason(3, year);
             var categs = (await this._categRepo.GetCategories()).ToList();
-            if (_config.GetValue<bool>("ado_opened"))
+            var param = await this._bsParametres.Get();
+            if (param.AdoOpened)
             {
                 if (ados.Any())
                 {
-                    int nbMax = _config.GetValue<int>("nbAdoMax");
-                    if (ados.Count() > nbMax)
+                    if (ados.Count() > param.NbAdoMax)
                     {
                         categs.First(c => c.IdCategory == 3).Blocked = true;
                     }
@@ -44,12 +48,12 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 categs.First(c => c.IdCategory == 3).Blocked = true;
             }
 
-            if (!_config.GetValue<bool>("compet_opened"))
+            if (!param.CompetOpened)
             {
                 categs.First(c => c.IdCategory == 1).Blocked = true;
             }
 
-            if (!_config.GetValue<bool>("loisir_opened"))
+            if (!param.LoisirOpened)
             {
                 categs.First(c => c.IdCategory == 2).Blocked = true;
             }

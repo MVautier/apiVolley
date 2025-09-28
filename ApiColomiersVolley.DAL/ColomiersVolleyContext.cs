@@ -21,6 +21,7 @@ namespace ApiColomiersVolley.DAL
         public DbSet<Article> Articles { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Parametres> Parametres { get; set; }
 
         public ColomiersVolleyContext()
         {
