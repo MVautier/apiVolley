@@ -510,5 +510,16 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 default: return 2;
             }
         }
+
+        public async Task SendMailing(DtoMailingRequest request)
+        {
+            var mailOrder = new MailOrder
+            {
+                Subject = request.Subject,
+                HtmlContent = request.Body,
+                ToMails = request.Emails
+            };
+            await _mailManager.SendMailUser(mailOrder);
+        }
     }
 }

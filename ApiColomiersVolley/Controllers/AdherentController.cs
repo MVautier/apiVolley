@@ -294,5 +294,20 @@ namespace ApiColomiersVolley.Controllers
         {
             return Ok(await _bsAdherent.RepairDocs());
         }
+
+        /// <summary>
+        /// Envoie un message a une liste d'adresses email (liste de diffusion non persistee, constituee cote client)
+        /// </summary>
+        /// <param name="request">Sujet, corps du message et adresses destinataires</param>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="400">Bad request / La syntaxe de la requête est erronée</response>
+        /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
+        /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
+        [HttpPost]
+        [Route("mailing/send")]
+        public async Task SendMailing([FromBody] DtoMailingRequest request)
+        {
+            await _bsAdherent.SendMailing(request);
+        }
     }
 }
