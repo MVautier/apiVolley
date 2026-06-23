@@ -5,7 +5,9 @@ using ApiColomiersVolley.BLL.Core.Tools.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Business;
 using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using ApiColomiersVolley.BLL.DMAdherent.Models;
+using ApiColomiersVolley.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace ApiColomiersVolley.Controllers
 {
@@ -90,6 +92,38 @@ namespace ApiColomiersVolley.Controllers
                 string message = ex.Message;
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Reçoit les notifications serveur-à-serveur (webhook) d'Helloasso pour finaliser
+        /// un paiement indépendamment du retour navigateur de l'utilisateur
+        /// </summary>
+        /// <response code="200">Success / Succès de la requête</response>
+        /// <response code="401">Unauthorized / Signature invalide</response>
+        [HttpPost]
+        [Route("webhook")]
+        public async Task<IActionResult> Webhook()
+        {
+            string rawBody;
+            using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
+            {
+                rawBody = await reader.ReadToEndAsync();
+            }
+
+            Request.Headers.TryGetValue("x-ha-signature", out var signatureHeader);
+            var remoteIp = HttpContext.GetRemoteIPAddress()?.ToString();
+
+            // HandleWebhook gère elle-même les erreurs de traitement (réponse 200 quand même,
+            // signature/IP déjà validées à ce stade) pour ne pas déclencher de retries Helloasso
+            // sur des erreurs applicatives non transitoires ; seule une signature/IP invalide
+            // renvoie false ici.
+            var isValid = await _serviceHello.HandleWebhook(rawBody, signatureHeader, remoteIp);
+            if (!isValid)
+            {
+                return Unauthorized();
+            }
+
+            return Ok();
         }
     }
 }

@@ -2,8 +2,11 @@
 using ApiColomiersVolley.BLL.Core.Helloasso.Models;
 using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools.Models;
+using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RestSharp;
+using System.Linq;
 using System.Net;
 
 namespace ApiColomiersVolley.BLL.Core.Helloasso
@@ -15,14 +18,16 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
         private readonly IBsRequestApi _requestApi;
         private readonly IServiceSendMail _mailManager;
         private readonly IBsToken _bsToken;
+        private readonly IBSAdherent _bsAdherent;
         private const string FOURNISSEUR = "Helloasso";
 
-        public ServiceHelloasso(IBsToken bsToken, IBsRequestApi requestApi, IServiceSendMail mailManager, IConfiguration config)
+        public ServiceHelloasso(IBsToken bsToken, IBsRequestApi requestApi, IServiceSendMail mailManager, IConfiguration config, IBSAdherent bsAdherent)
         {
             _bsToken = bsToken;
             _requestApi = requestApi;
             _mailManager = mailManager;
             _config = config;
+            _bsAdherent = bsAdherent;
         }
 
         public async Task<PostIntentResult> SendCheckout(Cart cart)
@@ -60,6 +65,49 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
             //}
 
             //return null;
+        }
+
+        public async Task<bool> HandleWebhook(string rawBody, string signatureHeader, string remoteIp)
+        {
+            var config = _config.GetSection(FOURNISSEUR);
+            var allowedIps = config.GetSection("webhookAllowedIps").Get<string[]>() ?? Array.Empty<string>();
+            var validSignature = HelloassoWebhookSignatureValidator.IsValid(rawBody, signatureHeader, config["webhookSignatureKey"]);
+            var validIp = HelloassoWebhookSignatureValidator.IsAllowedIp(remoteIp, allowedIps);
+            if (!validSignature && !validIp)
+            {
+                return false;
+            }
+
+            try
+            {
+                var payload = JsonConvert.DeserializeObject<WebhookNotification>(rawBody);
+                var payment = payload?.data?.payments?.FirstOrDefault();
+                if (payload?.data == null || payload.data.checkoutIntentId == 0 || payment?.state != "Authorized")
+                {
+                    return true;
+                }
+
+                var adhesionItem = payload.metadata?.items?.FirstOrDefault(i => i.type == "adhesion");
+                var uid = adhesionItem?.user?.FirstOrDefault();
+                if (string.IsNullOrEmpty(uid))
+                {
+                    return true;
+                }
+
+                // checkoutIntentId est la même valeur que celle déjà stockée par le retour navigateur
+                // (query param "checkoutIntentId", cf inscription-page.component.ts) : garantit que la
+                // garde anti-doublon dans BSAdherent matche correctement entre les deux chemins.
+                var idPaiement = (int)payload.data.checkoutIntentId;
+                var paymentLink = payment.paymentReceiptUrl;
+
+                await _bsAdherent.FinalizePayment(uid, idPaiement, paymentLink, payload.metadata?.total);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await _mailManager.SendMailErreur(ex, "Helloasso webhook: erreur de traitement du payload. Body: " + rawBody);
+                return true;
+            }
         }
 
         public async Task<GetIntentResult> GetReceiptUrl(string id)

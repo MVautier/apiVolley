@@ -80,6 +80,11 @@ namespace ApiColomiersVolley.DAL.DataProviders
             return (await GetAll().Where(a => ids.Contains(a.IdAdherent)).ToListAsync()).ToDtoAdherent();
         }
 
+        public async Task<DtoAdherent> GetByUid(string uid)
+        {
+            return (await GetAll().FirstOrDefaultAsync(a => a.Uid == uid)).ToDtoAdherent();
+        }
+
         public async Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting? sorting, Pagination? pagination)
         {
             var adherents = await GetFilteredAdherents(filter);

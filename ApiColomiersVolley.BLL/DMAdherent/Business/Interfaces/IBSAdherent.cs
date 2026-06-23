@@ -24,5 +24,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces
         Task<List<DtoStat>> GetStats();
         Task<bool> RepairDocs();
         Task SendMailing(DtoMailingRequest request);
+        Task<bool> FinalizePayment(string uid, int idPaiement, string paymentLink, int? total);
     }
 }

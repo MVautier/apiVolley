@@ -340,9 +340,17 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                                 order.Saison = result.Saison.Value;
                             }
 
+                            var alreadyDone = (await _orderRepo.GetByAdherent(order.IdAdherent.Value))
+                                .Any(o => o.IdPaiement == order.IdPaiement);
+                            if (alreadyDone)
+                            {
+                                // déjà finalisé par le webhook Helloasso entre-temps
+                                continue;
+                            }
+
                             await _orderRepo.AddOrUpdate(order);
                         }
-                        
+
                     }
                 }
 
@@ -520,6 +528,60 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 ToMails = request.Emails
             };
             await _mailManager.SendMailUser(mailOrder);
+        }
+
+        public async Task<bool> FinalizePayment(string uid, int idPaiement, string paymentLink, int? total)
+        {
+            try
+            {
+                var adherent = await _adherentRepo.GetByUid(uid);
+                if (adherent == null)
+                {
+                    await _mailManager.SendMailErreur(new Exception("Adherent introuvable"), $"FinalizePayment: aucun adhérent pour uid={uid}");
+                    return false;
+                }
+
+                var existingOrders = await _orderRepo.GetByAdherent(adherent.IdAdherent);
+                if (existingOrders.Any(o => o.IdPaiement == idPaiement))
+                {
+                    return true;
+                }
+
+                await _orderRepo.AddOrUpdate(new DtoOrder
+                {
+                    IdPaiement = idPaiement,
+                    IdAdherent = adherent.IdAdherent,
+                    Saison = adherent.Saison,
+                    Date = DateTime.Now,
+                    Total = total,
+                    Nom = adherent.LastName,
+                    Prenom = adherent.FirstName,
+                    Email = adherent.Email,
+                    DateNaissance = adherent.BirthdayDate,
+                    PaymentLink = paymentLink
+                });
+
+                if (adherent.Payment != "Terminé")
+                {
+                    adherent.Payment = "Terminé";
+                    await _adherentRepo.AddOrUpdate(adherent);
+                }
+
+                var membres = (await _adherentRepo.GetAdherents())
+                    .Where(a => a.IdParent == adherent.IdAdherent && a.Saison == adherent.Saison && a.Payment != "Terminé");
+                foreach (var membre in membres)
+                {
+                    membre.Payment = "Terminé";
+                    await _adherentRepo.AddOrUpdate(membre);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await _mailManager.SendMailErreur(ex, $"Erreur FinalizePayment (uid={uid}, idPaiement={idPaiement})");
+                return false;
+            }
         }
     }
 }

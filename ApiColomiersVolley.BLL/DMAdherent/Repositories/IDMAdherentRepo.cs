@@ -19,5 +19,6 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Repositories
         Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent);
         Task<DtoAdherent> Search(AdherentSearch search);
         Task<IEnumerable<DtoAdherent>> GetByIds(List<int> ids);
+        Task<DtoAdherent> GetByUid(string uid);
     }
 }
