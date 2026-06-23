@@ -86,7 +86,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             else
             {
                 var mailConf = _config.GetSection("MailSettings");
-                from = new MailAddress(mailConf.GetValue<string>("FromMail"), mailConf.GetValue<string>("FromName"), Encoding.UTF8);
+                from = new MailAddress(mailConf.GetValue<string>("EmailFrom"), mailConf.GetValue<string>("FromName"), Encoding.UTF8);
                 await Send(from, mailConf.GetValue<string>("EmailTo")?.Split(',').ToList() ?? new List<string>(), null, content.HtmlContent, content.Subject, content.TextContent, content.Files, parameters, files);
             }
         }
@@ -263,7 +263,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             return new MailConfig
             {
                 srv_mail = mailConf.GetValue<string>("SmtpHost"),
-                mail_sender = mailConf.GetValue<string>("FromMail"),
+                mail_sender = mailConf.GetValue<string>("EmailFrom"),
                 name_sender = mailConf.GetValue<string>("FromName")
             };
         }
