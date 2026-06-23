@@ -250,8 +250,11 @@ namespace ApiColomiersVolley.BLL.Core.Tools
 
         private MailConfig PrepareConfig(string mailParameters)
         {
-            if (!_config.GetSection("FeatureActivation").GetChildren().Any(c => c.Key == "enableRealMail")
-                || _config.GetSection("FeatureActivation").GetValue<bool>("enableRealMail"))
+            bool useTemplateParameters = !string.IsNullOrEmpty(mailParameters)
+                && (!_config.GetSection("FeatureActivation").GetChildren().Any(c => c.Key == "enableRealMail")
+                    || _config.GetSection("FeatureActivation").GetValue<bool>("enableRealMail"));
+
+            if (useTemplateParameters)
             {
                 return JsonConvert.DeserializeObject<MailConfig>(mailParameters);
             }
