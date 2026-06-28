@@ -216,6 +216,13 @@ namespace ApiColomiersVolley.Controllers
         /// <response code="403">Forbidden / Accès refusé:  les droits d'accès ne permettent pas au client d'accéder à la ressource</response>
         /// <response code="500">Internal Server Error / Erreur interne du serveur</response>
         [HttpPost]
+        [Route("batch")]
+        public async Task<IEnumerable<BatchAdherentResult>> AddOrUpdateBatch([FromBody] List<DtoAdherent> adherents)
+        {
+            return await _bsAdherent.AddOrUpdateBatch(adherents);
+        }
+
+        [HttpPost]
         public async Task<DtoAdherent> AddOrUpdate([FromBody] DtoAdherent adherent)
         {
             StringValues origin, referer;

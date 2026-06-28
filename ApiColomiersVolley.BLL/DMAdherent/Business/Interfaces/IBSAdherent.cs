@@ -15,6 +15,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces
         Task<PagedList<DtoAdherent>> GetPagedListe(AdherentFilter filter, Sorting sort, Pagination pager);
         Task<IEnumerable<DtoAdherent>> SearchAdherents(string name, string cp);
         Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent);
+        Task<IEnumerable<BatchAdherentResult>> AddOrUpdateBatch(List<DtoAdherent> adherents);
         Task<FileModel> GetExcelFile(AdherentFilter filter);
         Task<FileModel> GetDocuments(AdherentFilter filter, string type);
         Task<FileModel> GetEmailFile(AdherentFilter filter);

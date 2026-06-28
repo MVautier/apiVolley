@@ -82,7 +82,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             {
                 IdAdherent = adherent.IdAdherent,
                 IdParent = adherent.IdParent,
-                IdSection = GetIdSection(adherent.BirthdayDate),
+                IdSection = GetIdSection(adherent.BirthdayDate, adherent.Saison),
                 IdCategory = GetIdCategory(adherent.Category),
                 Authorization = adherent.Authorization,
                 FirstName = adherent.FirstName,
@@ -127,7 +127,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
 
             source.IdAdherent = adherent.IdAdherent;
             source.IdParent = adherent.IdParent;
-            source.IdSection = GetIdSection(adherent.BirthdayDate);
+            source.IdSection = GetIdSection(adherent.BirthdayDate, adherent.Saison);
             source.IdCategory = GetIdCategory(adherent.Category);
             source.Authorization = adherent.Authorization;
             source.FirstName = adherent.FirstName;
@@ -177,7 +177,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             return new Adherent
             {
                 IdParent = adherent.IdParent,
-                IdSection = GetIdSection(adherent.BirthdayDate),
+                IdSection = GetIdSection(adherent.BirthdayDate, adherent.Saison),
                 IdCategory = GetIdCategory(adherent.Category),
                 Authorization = adherent.Authorization,
                 FirstName = adherent.FirstName,
@@ -218,20 +218,17 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             return adherents.Select(a => a.ToAdherent());
         }
 
-        private static int? GetIdSection(DateTime? birthDate)
+        private static int? GetIdSection(DateTime? birthDate, int? saison = null)
         {
-            int? age = GetAge(birthDate);
-            if (age.HasValue)
-            {
-                return age <= 16 ? 1 : (age <= 18 ? 2 : 3);
-            }
-
-            return null;
+            if (!birthDate.HasValue) return null;
+            int year = saison ?? DateTime.Now.Year;
+            int age = year - birthDate.Value.Year;
+            return age <= 16 ? 1 : (age <= 18 ? 2 : 3);
         }
 
-        private static int? GetIdCategory(string categ)
+        private static int GetIdCategory(string categ)
         {
-            return categ == "C" ? 1 : (categ == "L" ? 2 : (categ == "E" ? 3 : null));
+            return categ == "C" ? 1 : (categ == "L" ? 2 : (categ == "E" ? 3 : 4));
         }
 
         private static int? GetAge(DateTime? birthDate)

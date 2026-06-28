@@ -81,7 +81,7 @@ namespace ApiColomiersVolley.DAL.Entities
         [Column("histo", TypeName = "varchar(4000)")]
         public string? Histo { get; set; }
 
-        public virtual Section Section { get; set; }
-        public virtual Category Category { get; set; }
+        public virtual Section? Section { get; set; }
+        public virtual Category? Category { get; set; }
     }
 }

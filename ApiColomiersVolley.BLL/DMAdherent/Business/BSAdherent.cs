@@ -281,6 +281,31 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             return await _adherentRepo.SearchAdherents(name, cp);
         }
 
+        public async Task<IEnumerable<BatchAdherentResult>> AddOrUpdateBatch(List<DtoAdherent> adherents)
+        {
+            var results = new List<BatchAdherentResult>();
+            foreach (var adherent in adherents)
+            {
+                if (string.IsNullOrEmpty(adherent.Genre)) adherent.Genre = "";
+                if (string.IsNullOrEmpty(adherent.Phone)) adherent.Phone = "";
+                if (string.IsNullOrEmpty(adherent.Email)) adherent.Email = "";
+                if (string.IsNullOrEmpty(adherent.Address)) adherent.Address = "";
+                if (string.IsNullOrEmpty(adherent.PostalCode)) adherent.PostalCode = "";
+                if (string.IsNullOrEmpty(adherent.City)) adherent.City = "";
+
+                try
+                {
+                    var result = await _adherentRepo.AddOrUpdate(adherent);
+                    results.Add(new BatchAdherentResult { Adherent = result });
+                }
+                catch (Exception ex)
+                {
+                    results.Add(new BatchAdherentResult { Error = ex.Message });
+                }
+            }
+            return results;
+        }
+
         public async Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent)
         {
             try
