@@ -12,20 +12,20 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public int IdAdherent { get; set; }
         public int? IdParent { get; set; }
         public string? Section { get; set; } // filled on insert/update
-        public string Category { get; set; } // filled on insert/update
+        public string? Category { get; set; } // filled on insert/update
         public string? Authorization { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
-        public string Genre { get; set; }
+        public string? Genre { get; set; }
         public DateTime? BirthdayDate { get; set; }
         public DateTime? InscriptionDate { get; set; } // filled on insert/update
         public int? Age { get; set; } // filled on insert/update
         public DateTime? HealthStatementDate { get; set; }
         public string? Phone { get; set; }
         public string? ParentPhone { get; set; }
-        public string Address { get; set; }
-        public string PostalCode { get; set; }
-        public string City { get; set; }
+        public string? Address { get; set; }
+        public string? PostalCode { get; set; }
+        public string? City { get; set; }
         public string? Email { get; set; }
         public string? Photo { get; set; }
         public string? Licence { get; set; }
