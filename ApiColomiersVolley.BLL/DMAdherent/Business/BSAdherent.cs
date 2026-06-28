@@ -285,15 +285,18 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
         {
             try
             {
+                if (string.IsNullOrEmpty(adherent.Genre))
+                    adherent.Genre = "";
                 if (string.IsNullOrEmpty(adherent.Phone))
-                {
                     adherent.Phone = "";
-                }
-
                 if (string.IsNullOrEmpty(adherent.Email))
-                {
                     adherent.Email = "";
-                }
+                if (string.IsNullOrEmpty(adherent.Address))
+                    adherent.Address = "";
+                if (string.IsNullOrEmpty(adherent.PostalCode))
+                    adherent.PostalCode = "";
+                if (string.IsNullOrEmpty(adherent.City))
+                    adherent.City = "";
 
                 if (adherent.InscriptionDate.HasValue)
                 {
