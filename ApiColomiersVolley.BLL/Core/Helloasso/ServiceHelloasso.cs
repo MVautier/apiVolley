@@ -100,7 +100,11 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
                 var idPaiement = (int)payload.data.checkoutIntentId;
                 var paymentLink = payment.paymentReceiptUrl;
 
-                await _bsAdherent.FinalizePayment(uid, idPaiement, paymentLink, payload.metadata?.total);
+                var cotisationC3L = payload.metadata?.items?
+                    .Where(i => i.type == "adhesion")
+                    .Sum(i => (int?)i.montant);
+
+                await _bsAdherent.FinalizePayment(uid, idPaiement, paymentLink, payload.metadata?.total, payload.metadata?.saison, cotisationC3L);
                 return true;
             }
             catch (Exception ex)

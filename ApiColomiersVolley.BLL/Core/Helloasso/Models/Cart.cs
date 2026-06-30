@@ -12,6 +12,8 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso.Models
         public CartItem[] items { get; set; }
         public DateTime date { get; set; }
         public int total { get; set; }
+        public int? cotisationC3L { get; set; }
+        public int? saison { get; set; }
         public Client client { get; set; }
     }
 }

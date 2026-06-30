@@ -558,7 +558,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             await _mailManager.SendMailUser(mailOrder);
         }
 
-        public async Task<bool> FinalizePayment(string uid, int idPaiement, string paymentLink, int? total)
+        public async Task<bool> FinalizePayment(string uid, int idPaiement, string paymentLink, int? total, int? saison, int? cotisationC3L)
         {
             try
             {
@@ -579,8 +579,9 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 {
                     IdPaiement = idPaiement,
                     IdAdherent = adherent.IdAdherent,
-                    Saison = adherent.Saison,
+                    Saison = saison ?? adherent.Saison,
                     Date = DateTime.Now,
+                    CotisationC3L = cotisationC3L,
                     Total = total,
                     Nom = adherent.LastName,
                     Prenom = adherent.FirstName,
