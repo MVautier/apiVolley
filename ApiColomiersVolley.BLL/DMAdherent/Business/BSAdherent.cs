@@ -522,11 +522,10 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             return info;
         }
 
-        private async Task SendMailInfo(DtoAdherent adherent)
+        private async Task SendMailInfo(DtoAdherent adherent, string title = "Adherent was saved")
         {
             try
             {
-                string title = "Adherent was saved";
                 string content = JsonConvert.SerializeObject(adherent);
                 await _mailManager.SendMailSimple(title, content);
             }
@@ -575,7 +574,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     return true;
                 }
 
-                await _orderRepo.AddOrUpdate(new DtoOrder
+                var order = new DtoOrder
                 {
                     IdPaiement = idPaiement,
                     IdAdherent = adherent.IdAdherent,
@@ -588,7 +587,9 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     Email = adherent.Email,
                     DateNaissance = adherent.BirthdayDate,
                     PaymentLink = paymentLink
-                });
+                };
+                await _orderRepo.AddOrUpdate(order);
+                adherent.Orders = new List<DtoOrder> { order };
 
                 if (adherent.Payment != "Terminé")
                 {
@@ -603,6 +604,10 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     membre.Payment = "Terminé";
                     await _adherentRepo.AddOrUpdate(membre);
                 }
+
+#if (!DEBUG)
+                await SendMailInfo(adherent, "Adherent was saved (via webhook)");
+#endif
 
                 return true;
             }
