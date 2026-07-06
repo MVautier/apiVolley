@@ -430,48 +430,61 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
 
         public async Task<FileModel> GetOrderFile(AdherentFilter filter)
         {
-            var adherents = await GetPagedListe(filter, null, null);
+            // Même logique que l'affichage écran (GetOrders) : quand une plage de dates est fournie, c'est elle qui
+            // détermine ce qui est inclus (sur la date de la commande, ou l'InscriptionDate pour un paiement manuel).
+            // La saison n'est qu'un filtre de repli, utilisé seulement si aucune plage de dates n'est fournie.
+            // Ne jamais appliquer les deux en même temps : un paiement dans la période pouvait être écarté à tort
+            // parce que la saison de l'adhérent (calculée à l'inscription) ne correspondait pas à filter.Saison.
             var fileName = "Paiements";
             var orders_hello = new List<DtoOrderExport>();
             var orders_manuals = new List<DtoOrderExport>();
-            var end = filter.DateRange.End.HasValue ? filter.DateRange.End.Value : DateTime.Now.AddDays(1);
+            var start = filter.DateRange?.Start;
+            var end = filter.DateRange?.End.HasValue == true ? filter.DateRange.End.Value : DateTime.Now.AddDays(1);
+            var hasDateRange = start.HasValue;
 
-            if (adherents != null && adherents.Datas.Any())
+            var adherents = await _adherentRepo.GetAdherents();
+            var commandes = await _orderRepo.Get();
+
+            foreach (var a in adherents)
             {
+                a.Membres = !string.IsNullOrEmpty(a.Address) ?
+                        adherents.Where(m => m.Address == a.Address && m.IdAdherent != a.IdAdherent && m.IdParent == a.IdAdherent && m.Saison == a.Saison).ToList()
+                        : new List<DtoAdherent>();
 
-                foreach (var a in adherents.Datas)
+                if (a.Payment == "Terminé" || a.Payment == "En attente")
                 {
-                    a.Membres = !string.IsNullOrEmpty(a.Address) ?
-                            adherents.Datas.Where(_a => _a.Address == a.Address && _a.IdAdherent != a.IdAdherent && _a.IdParent == a.IdAdherent && _a.Saison == a.Saison).ToList()
-                            : new List<DtoAdherent>();
-                    if (a.Saison == filter.Saison && a.Orders != null && a.Orders.Any())
+                    foreach (var o in commandes.Where(c => c.IdAdherent == a.IdAdherent))
                     {
-                        foreach(var o in a.Orders)
+                        var matches = hasDateRange ? (o.Date >= start && o.Date <= end) : a.Saison == filter.Saison;
+                        if (!matches)
                         {
-                            if (o.Date >= filter.DateRange.Start && o.Date <= end)
-                            {
-                                orders_hello.Add(new DtoOrderExport
-                                {
-                                    Id = o.Id,
-                                    IdPaiement = o.IdPaiement,
-                                    IdAdherent = a.IdAdherent,
-                                    Date = a.InscriptionDate,
-                                    Nom = a.LastName,
-                                    CotisationC3L = o.CotisationC3L,
-                                    Total = o.Total,
-                                    Prenom = a.FirstName,
-                                    Email = a.Email,
-                                    DateNaissance = a.BirthdayDate,
-                                    PaymentLink = o.PaymentLink,
-                                    Payment = a.Payment,
-                                    PaymentComment = a.PaymentComment,
-                                    Members = GetMembersInfo(a)
-                                });
-                            }
+                            continue;
                         }
-                        
-                    } 
-                    else if (!string.IsNullOrEmpty(a.Payment) && a.Payment == "Manuel" && a.InscriptionDate >= filter.DateRange.Start && a.InscriptionDate <= end)
+
+                        orders_hello.Add(new DtoOrderExport
+                        {
+                            Id = o.Id,
+                            IdPaiement = o.IdPaiement,
+                            IdAdherent = a.IdAdherent,
+                            Date = a.InscriptionDate,
+                            Nom = a.LastName,
+                            CotisationC3L = o.CotisationC3L,
+                            Total = o.Total,
+                            Prenom = a.FirstName,
+                            Email = a.Email,
+                            DateNaissance = a.BirthdayDate,
+                            PaymentLink = o.PaymentLink,
+                            Payeur = $"{o.Prenom} {o.Nom}".Trim(),
+                            Payment = a.Payment,
+                            PaymentComment = a.PaymentComment,
+                            Members = GetMembersInfo(a)
+                        });
+                    }
+                }
+                else if (a.Payment == "Manuel")
+                {
+                    var matches = hasDateRange ? (a.InscriptionDate >= start && a.InscriptionDate <= end) : a.Saison == filter.Saison;
+                    if (matches)
                     {
                         orders_manuals.Add(new DtoOrderExport
                         {
