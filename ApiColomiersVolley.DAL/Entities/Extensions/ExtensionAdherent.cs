@@ -184,7 +184,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 LastName = adherent.LastName,
                 Genre = adherent.Genre,
                 BirthdayDate = adherent.BirthdayDate,
-                InscriptionDate = DateTime.Now,
+                InscriptionDate = DateOnly.FromDateTime(DateTime.Now),
                 HealthStatementDate = adherent.HealthStatementDate,
                 CertificateDate = adherent.CertificateDate,
                 Phone = adherent.Phone,
@@ -218,7 +218,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             return adherents.Select(a => a.ToAdherent());
         }
 
-        private static int? GetIdSection(DateTime? birthDate, int? saison = null)
+        private static int? GetIdSection(DateOnly? birthDate, int? saison = null)
         {
             if (!birthDate.HasValue) return null;
             int year = saison ?? DateTime.Now.Year;
@@ -231,7 +231,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             return categ == "C" ? 1 : (categ == "L" ? 2 : (categ == "E" ? 3 : 4));
         }
 
-        private static int? GetAge(DateTime? birthDate)
+        private static int? GetAge(DateOnly? birthDate)
         {
             if (birthDate.HasValue)
             {

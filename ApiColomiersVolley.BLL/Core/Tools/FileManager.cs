@@ -300,6 +300,13 @@ namespace ApiColomiersVolley.BLL.Core.Tools
                         List<string> vals = (List<string>)Props[i].GetValue(item, null);
                         values[i] = vals != null && vals.Any() ? string.Join(", ", vals) : "";
                     }
+                    else if (Props[i].PropertyType == typeof(DateOnly) || Props[i].PropertyType == typeof(DateOnly?))
+                    {
+                        // DateOnly n'implemente pas IConvertible : Convert.ChangeType (utilise par
+                        // DataTable.Rows.Add pour une colonne string) leverait une InvalidCastException.
+                        var val = Props[i].GetValue(item, null);
+                        values[i] = val != null ? ((DateOnly)val).ToString("dd/MM/yyyy") : "";
+                    }
                     else
                     {
                         values[i] = Props[i].GetValue(item, null);

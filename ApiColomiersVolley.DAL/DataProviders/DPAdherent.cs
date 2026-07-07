@@ -132,10 +132,10 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
                 if (search.birthdayDate.HasValue)
                 {
-                    adherents = adherents.Where(a => a.BirthdayDate.HasValue 
-                    && a.BirthdayDate.Value.Year == search.birthdayDate.Value.Year
-                    && a.BirthdayDate.Value.Month == search.birthdayDate.Value.Month
-                    && a.BirthdayDate.Value.Day == search.birthdayDate.Value.Day);
+                    // Comparaison directe possible : BirthdayDate est une date pure (DateOnly), plus jamais
+                    // polluee par une heure parasite, contrairement a l'ancienne comparaison Y/M/D qui
+                    // contournait ce probleme (et n'est de toute facon pas traduisible en SQL par ce provider).
+                    adherents = adherents.Where(a => a.BirthdayDate == search.birthdayDate.Value);
                 }
 
                 if (adherents.Any()) 

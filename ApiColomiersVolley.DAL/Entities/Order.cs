@@ -33,7 +33,7 @@ namespace ApiColomiersVolley.DAL.Entities
         [Column("email")]
         public string? Email { get; set; }
         [Column("date_naissance")]
-        public DateTime? DateNaissance { get; set; }
+        public DateOnly? DateNaissance { get; set; }
         [Column("payment_link", TypeName = "varchar(800)")]
         public string? PaymentLink { get; set; }
     }

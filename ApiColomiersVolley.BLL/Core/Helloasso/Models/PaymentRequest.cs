@@ -34,7 +34,7 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso.Models
                 firstName = cart.client.FirstName,
                 lastName = cart.client.LastName,
                 email = cart.client.Email,
-                dateOfBirth = cart.client.BirthdayDate,
+                dateOfBirth = cart.client.BirthdayDate.ToDateTime(TimeOnly.MinValue),
                 address = cart.client.Address,
                 city = cart.client.City,
                 zipCode = cart.client.PostalCode,

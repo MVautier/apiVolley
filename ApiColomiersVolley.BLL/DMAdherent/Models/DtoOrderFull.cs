@@ -11,9 +11,9 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public int? IdParent { get; set; }
         public string? LastName { get; set; }
         public string? FirstName { get; set; }
-        public DateTime? BirthdayDate { get; set; }
+        public DateOnly? BirthdayDate { get; set; }
         public string? Payment { get; set; }
-        public DateTime? InscriptionDate { get; set; }
+        public DateOnly? InscriptionDate { get; set; }
         public List<DtoAdherent>? Membres { get; set; }
         public string PaymentMode { get; set; }
 

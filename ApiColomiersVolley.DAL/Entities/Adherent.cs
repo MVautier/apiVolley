@@ -26,13 +26,13 @@ namespace ApiColomiersVolley.DAL.Entities
         [Column("genre", TypeName = "varchar(1)")]
         public string Genre { get; set; }
         [Column("date_naissance")]
-        public DateTime? BirthdayDate { get; set; }
+        public DateOnly? BirthdayDate { get; set; }
         [Column("date_inscription")]
-        public DateTime? InscriptionDate { get; set; }
+        public DateOnly? InscriptionDate { get; set; }
         [Column("date_questionnaire")]
-        public DateTime? HealthStatementDate { get; set; }
+        public DateOnly? HealthStatementDate { get; set; }
         [Column("date_certificat")]
-        public DateTime? CertificateDate { get; set; }
+        public DateOnly? CertificateDate { get; set; }
         [Column("tel", TypeName = "varchar(20)")]
         public string Phone { get; set; }
         [Column("tel_parent", TypeName = "varchar(100)")]

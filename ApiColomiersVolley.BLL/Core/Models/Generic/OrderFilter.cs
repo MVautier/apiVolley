@@ -8,8 +8,8 @@ namespace ApiColomiersVolley.BLL.Core.Models.Generic
 {
     public class OrderFilter
     {
-        public DateTime? start {  get; set; }
-        public DateTime? end { get; set; }
+        public DateOnly? start {  get; set; }
+        public DateOnly? end { get; set; }
         public int? season { get; set; }
     }
 }

@@ -135,7 +135,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                         {
                             foreach (var cmd in cmds)
                             {
-                                if (search.start.HasValue && search.end.HasValue && cmd.Date >= search.start.Value && cmd.Date <= search.end.Value)
+                                if (search.start.HasValue && search.end.HasValue && cmd.Date >= search.start.Value.ToDateTime(TimeOnly.MinValue) && cmd.Date < search.end.Value.AddDays(1).ToDateTime(TimeOnly.MinValue))
                                 {
                                     ordersHello.Add(new DtoOrderFull(adherent, cmd, membres));
                                 }
@@ -439,7 +439,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             var orders_hello = new List<DtoOrderExport>();
             var orders_manuals = new List<DtoOrderExport>();
             var start = filter.DateRange?.Start;
-            var end = filter.DateRange?.End.HasValue == true ? filter.DateRange.End.Value : DateTime.Now.AddDays(1);
+            var end = filter.DateRange?.End.HasValue == true ? filter.DateRange.End.Value : DateOnly.FromDateTime(DateTime.Now);
             var hasDateRange = start.HasValue;
 
             var adherents = await _adherentRepo.GetAdherents();
@@ -455,7 +455,9 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 {
                     foreach (var o in commandes.Where(c => c.IdAdherent == a.IdAdherent))
                     {
-                        var matches = hasDateRange ? (o.Date >= start && o.Date <= end) : a.Saison == filter.Saison;
+                        var matches = hasDateRange
+                            ? (o.Date >= start.Value.ToDateTime(TimeOnly.MinValue) && o.Date < end.AddDays(1).ToDateTime(TimeOnly.MinValue))
+                            : a.Saison == filter.Saison;
                         if (!matches)
                         {
                             continue;
@@ -466,7 +468,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                             Id = o.Id,
                             IdPaiement = o.IdPaiement,
                             IdAdherent = a.IdAdherent,
-                            Date = a.InscriptionDate,
+                            Date = o.Date,
                             Nom = a.LastName,
                             CotisationC3L = o.CotisationC3L,
                             Total = o.Total,
@@ -491,7 +493,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                             Id = 0,
                             IdPaiement = 0,
                             IdAdherent = a.IdAdherent,
-                            Date = a.InscriptionDate,
+                            Date = a.InscriptionDate?.ToDateTime(TimeOnly.MinValue),
                             Nom = a.LastName,
                             Prenom = a.FirstName,
                             Email = a.Email,
@@ -592,7 +594,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     IdPaiement = idPaiement,
                     IdAdherent = adherent.IdAdherent,
                     Saison = saison ?? adherent.Saison,
-                    Date = DateTime.Now,
+                    Date = DateTime.UtcNow,
                     CotisationC3L = cotisationC3L,
                     Total = total,
                     Nom = adherent.LastName,

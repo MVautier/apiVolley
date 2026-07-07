@@ -19,7 +19,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public string? Nom { get; set; }
         public string? Prenom { get; set; }
         public string? Email { get; set; }
-        public DateTime? DateNaissance { get; set; }
+        public DateOnly? DateNaissance { get; set; }
         public string? PaymentLink { get; set; }
     }
 }

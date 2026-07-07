@@ -17,10 +17,10 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string? Genre { get; set; }
-        public DateTime? BirthdayDate { get; set; }
-        public DateTime? InscriptionDate { get; set; } // filled on insert/update
+        public DateOnly? BirthdayDate { get; set; }
+        public DateOnly? InscriptionDate { get; set; } // filled on insert/update
         public int? Age { get; set; } // filled on insert/update
-        public DateTime? HealthStatementDate { get; set; }
+        public DateOnly? HealthStatementDate { get; set; }
         public string? Phone { get; set; }
         public string? ParentPhone { get; set; }
         public string? Address { get; set; }
@@ -47,7 +47,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public string? Team1 { get; set; }
         public string? Team2 { get; set; }
         public string? PaymentComment { get; set; }
-        public DateTime? CertificateDate { get; set; }
+        public DateOnly? CertificateDate { get; set; }
         public string? Payment { get; set; }
         public string? VerifC3L { get; set; }
 

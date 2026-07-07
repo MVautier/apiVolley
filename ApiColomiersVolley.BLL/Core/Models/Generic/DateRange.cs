@@ -8,7 +8,7 @@ namespace ApiColomiersVolley.BLL.Core.Models.Generic
 {
     public class DateRange
     {
-        public DateTime? Start { get; set; }
-        public DateTime? End { get; set; }
+        public DateOnly? Start { get; set; }
+        public DateOnly? End { get; set; }
     }
 }

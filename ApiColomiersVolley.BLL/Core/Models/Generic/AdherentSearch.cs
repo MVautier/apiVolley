@@ -10,6 +10,6 @@ namespace ApiColomiersVolley.BLL.Core.Models.Generic
     {
         public string nom { get; set; }
         public string prenom { get; set; }
-        public DateTime? birthdayDate { get; set; }
+        public DateOnly? birthdayDate { get; set; }
     }
 }
