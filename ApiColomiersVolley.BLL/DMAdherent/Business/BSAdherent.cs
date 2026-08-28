@@ -537,6 +537,31 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             return info;
         }
 
+        /// <summary>
+        /// Passe l'adhérent en paiement terminé et renseigne sa part CLLL. Retourne true si
+        /// quelque chose a changé, donc s'il faut le sauvegarder.
+        /// </summary>
+        private static bool SetPaymentDone(DtoAdherent adherent, IDictionary<string, int> cotisationC3LByUid)
+        {
+            bool changed = false;
+            if (adherent.Payment != "Terminé")
+            {
+                adherent.Payment = "Terminé";
+                changed = true;
+            }
+
+            if (!string.IsNullOrEmpty(adherent.Uid)
+                && cotisationC3LByUid != null
+                && cotisationC3LByUid.TryGetValue(adherent.Uid, out int part)
+                && adherent.CotisationC3L != part)
+            {
+                adherent.CotisationC3L = part;
+                changed = true;
+            }
+
+            return changed;
+        }
+
         private async Task SendMailInfo(DtoAdherent adherent, string title = "Adherent was saved")
         {
             try
@@ -572,7 +597,12 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             await _mailManager.SendMailUser(mailOrder);
         }
 
-        public async Task<bool> FinalizePayment(string uid, int idPaiement, string paymentLink, int? total, int? saison, int? cotisationC3L)
+        /// <summary>
+        /// Finalise une commande Helloasso reçue par webhook. <paramref name="cotisationC3LByUid"/>
+        /// porte la ventilation de la part CLLL par personne (principal et membres du foyer),
+        /// la commande ne stockant que le total.
+        /// </summary>
+        public async Task<bool> FinalizePayment(string uid, int idPaiement, string paymentLink, int? total, int? saison, int? cotisationC3L, IDictionary<string, int> cotisationC3LByUid = null)
         {
             try
             {
@@ -606,18 +636,19 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 await _orderRepo.AddOrUpdate(order);
                 adherent.Orders = new List<DtoOrder> { order };
 
-                if (adherent.Payment != "Terminé")
+                if (SetPaymentDone(adherent, cotisationC3LByUid))
                 {
-                    adherent.Payment = "Terminé";
                     await _adherentRepo.AddOrUpdate(adherent);
                 }
 
                 var membres = (await _adherentRepo.GetAdherents())
-                    .Where(a => a.IdParent == adherent.IdAdherent && a.Saison == adherent.Saison && a.Payment != "Terminé");
+                    .Where(a => a.IdParent == adherent.IdAdherent && a.Saison == adherent.Saison);
                 foreach (var membre in membres)
                 {
-                    membre.Payment = "Terminé";
-                    await _adherentRepo.AddOrUpdate(membre);
+                    if (SetPaymentDone(membre, cotisationC3LByUid))
+                    {
+                        await _adherentRepo.AddOrUpdate(membre);
+                    }
                 }
 
 #if (!DEBUG)

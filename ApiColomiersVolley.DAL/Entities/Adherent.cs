@@ -80,6 +80,13 @@ namespace ApiColomiersVolley.DAL.Entities
         public string? Signature { get; set; }
         [Column("histo", TypeName = "varchar(4000)")]
         public string? Histo { get; set; }
+        /// <summary>
+        /// Part de la commande revenant au CLLL pour cet adhérent (adhésion principale ou ligne
+        /// membre du foyer). La commande ne porte que le total : ce détail permet de ventiler
+        /// CLLL/CLUB par personne, y compris pour les membres qui n'ont pas de commande propre.
+        /// </summary>
+        [Column("cotisation_c3l")]
+        public int? CotisationC3L { get; set; }
 
         public virtual Section? Section { get; set; }
         public virtual Category? Category { get; set; }

@@ -100,11 +100,15 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
                 var idPaiement = (int)payload.data.checkoutIntentId;
                 var paymentLink = payment.paymentReceiptUrl;
 
-                var cotisationC3L = payload.metadata?.items?
-                    .Where(i => i.type == "adhesion")
-                    .Sum(i => (int?)i.montant);
+                // Même règle que le front (cf. inscription-page.component.ts) : l'adhésion CLLL
+                // couvre le principal (type "adhesion") et chaque membre du foyer (type "membre").
+                var itemsC3L = payload.metadata?.items?
+                    .Where(i => i.type == "adhesion" || i.type == "membre")
+                    .ToList();
+                var cotisationC3L = itemsC3L?.Sum(i => (int?)i.montant);
+                var cotisationC3LByUid = GetCotisationC3LByUid(itemsC3L);
 
-                await _bsAdherent.FinalizePayment(uid, idPaiement, paymentLink, payload.metadata?.total, payload.metadata?.saison, cotisationC3L);
+                await _bsAdherent.FinalizePayment(uid, idPaiement, paymentLink, payload.metadata?.total, payload.metadata?.saison, cotisationC3L, cotisationC3LByUid);
                 return true;
             }
             catch (Exception ex)
@@ -112,6 +116,31 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
                 await _mailManager.SendMailErreur(ex, "Helloasso webhook: erreur de traitement du payload. Body: " + rawBody);
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Ventile la part CLLL par personne. Le front regroupe les lignes de même montant en un
+        /// seul item portant plusieurs uid (cf. Cart.getGroupItems) : la part de chacun est alors
+        /// le montant de l'item divisé par le nombre d'uid.
+        /// </summary>
+        private static Dictionary<string, int> GetCotisationC3LByUid(List<CartItem> items)
+        {
+            var parts = new Dictionary<string, int>();
+            if (items == null)
+            {
+                return parts;
+            }
+
+            foreach (var item in items.Where(i => i.user != null && i.user.Any()))
+            {
+                var part = item.montant / item.user.Length;
+                foreach (var itemUid in item.user.Where(u => !string.IsNullOrEmpty(u)))
+                {
+                    parts[itemUid] = part;
+                }
+            }
+
+            return parts;
         }
 
         public async Task<GetIntentResult> GetReceiptUrl(string id)

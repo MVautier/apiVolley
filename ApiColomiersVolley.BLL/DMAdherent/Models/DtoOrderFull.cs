@@ -16,6 +16,11 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public DateOnly? InscriptionDate { get; set; }
         public List<DtoAdherent>? Membres { get; set; }
         public string PaymentMode { get; set; }
+        /// <summary>
+        /// Part CLLL de cette personne, portée par l'adhérent et non par la commande.
+        /// <see cref="DtoOrder.CotisationC3L"/>, lui, porte le total CLLL de toute la commande.
+        /// </summary>
+        public int? C3lShare { get; set; }
 
         public DtoOrderFull(DtoAdherent adherent, DtoOrder? order, IEnumerable<DtoAdherent> membres)
         {
@@ -37,6 +42,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
             this.BirthdayDate = adherent?.BirthdayDate;
             this.Payment = adherent?.PaymentComment;
             this.InscriptionDate = adherent?.InscriptionDate;
+            this.C3lShare = adherent?.CotisationC3L;
             this.Membres = membres?.ToList() ?? null;
             this.PaymentMode = order != null ? "Helloasso" : "Manuel";
         }

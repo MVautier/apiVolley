@@ -62,6 +62,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 ImageRight = adherent.ImageRight,
                 Signature = adherent.Signature,
                 VerifC3L = adherent.VerifC3L,
+                CotisationC3L = adherent.CotisationC3L,
                 Histo = !string.IsNullOrEmpty(adherent.Histo) ? JsonConvert.DeserializeObject<List<DtoHisto>>(adherent.Histo) : new List<DtoHisto>()
             };
         }
@@ -114,6 +115,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 ImageRight = adherent.ImageRight,
                 Signature = adherent.Signature,
                 VerifC3L = adherent.VerifC3L,
+                CotisationC3L = adherent.CotisationC3L,
                 Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : null,
             };
         }
@@ -162,6 +164,12 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             source.ImageRight = adherent.ImageRight;
             source.Signature = adherent.Signature;
             source.VerifC3L = adherent.VerifC3L;
+            // Renseignée uniquement par le parcours d'inscription : les formulaires admin ne la
+            // portent pas, on garde donc la valeur existante plutôt que de l'écraser par null.
+            if (adherent.CotisationC3L.HasValue)
+            {
+                source.CotisationC3L = adherent.CotisationC3L;
+            }
             source.Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : source.Histo;
 
             return source;
@@ -209,6 +217,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 ImageRight = adherent.ImageRight,
                 Signature = adherent.Signature,
                 VerifC3L = adherent.VerifC3L,
+                CotisationC3L = adherent.CotisationC3L,
                 Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : null
             };
         }

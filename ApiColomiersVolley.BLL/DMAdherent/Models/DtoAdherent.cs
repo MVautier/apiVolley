@@ -41,6 +41,11 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         public List<DtoDocument>? Documents { get; set; }
         public List<DtoOrder> Orders { get; set; }
         public List<DtoHisto> Histo { get; set; }
+        /// <summary>
+        /// Part de la commande revenant au CLLL pour cet adhérent (adhésion principale ou ligne
+        /// membre du foyer), la commande ne portant que le total.
+        /// </summary>
+        public int? CotisationC3L { get; set; }
 
         // Champs saisis par l'admin
         public int? Saison { get; set; }

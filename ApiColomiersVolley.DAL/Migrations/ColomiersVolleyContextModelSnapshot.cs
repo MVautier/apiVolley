@@ -58,6 +58,10 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("ville");
 
+                    b.Property<int?>("CotisationC3L")
+                        .HasColumnType("int")
+                        .HasColumnName("cotisation_c3l");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(150)")
@@ -82,7 +86,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnName("histo");
 
                     b.Property<int?>("IdCategory")
-                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("id_categorie");
 
@@ -91,7 +94,6 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnName("id_parent");
 
                     b.Property<int?>("IdSection")
-                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("id_section");
 
@@ -616,15 +618,11 @@ namespace ApiColomiersVolley.DAL.Migrations
                 {
                     b.HasOne("ApiColomiersVolley.DAL.Entities.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("IdCategory")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdCategory");
 
                     b.HasOne("ApiColomiersVolley.DAL.Entities.Section", "Section")
                         .WithMany()
-                        .HasForeignKey("IdSection")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdSection");
 
                     b.Navigation("Category");
 
