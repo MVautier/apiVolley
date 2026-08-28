@@ -140,6 +140,10 @@ namespace ApiColomiersVolley.DAL.Migrations
                         .HasColumnType("varchar(5)")
                         .HasColumnName("cp");
 
+                    b.Property<string>("Relationship")
+                        .HasColumnType("varchar(1)")
+                        .HasColumnName("lien_parente");
+
                     b.Property<bool?>("Rgpd")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("rgpd");

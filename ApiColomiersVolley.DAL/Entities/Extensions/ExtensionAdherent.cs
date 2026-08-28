@@ -63,6 +63,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Signature = adherent.Signature,
                 VerifC3L = adherent.VerifC3L,
                 CotisationC3L = adherent.CotisationC3L,
+                Relationship = adherent.Relationship,
                 Histo = !string.IsNullOrEmpty(adherent.Histo) ? JsonConvert.DeserializeObject<List<DtoHisto>>(adherent.Histo) : new List<DtoHisto>()
             };
         }
@@ -116,6 +117,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Signature = adherent.Signature,
                 VerifC3L = adherent.VerifC3L,
                 CotisationC3L = adherent.CotisationC3L,
+                Relationship = adherent.Relationship,
                 Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : null,
             };
         }
@@ -170,6 +172,12 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
             {
                 source.CotisationC3L = adherent.CotisationC3L;
             }
+            // Même raison que ci-dessus : seul le parcours d'inscription porte le lien de
+            // parenté, les formulaires admin l'ignorent et l'écraseraient par null.
+            if (!string.IsNullOrEmpty(adherent.Relationship))
+            {
+                source.Relationship = adherent.Relationship;
+            }
             source.Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : source.Histo;
 
             return source;
@@ -218,6 +226,7 @@ namespace ApiColomiersVolley.DAL.Entities.Extensions
                 Signature = adherent.Signature,
                 VerifC3L = adherent.VerifC3L,
                 CotisationC3L = adherent.CotisationC3L,
+                Relationship = adherent.Relationship,
                 Histo = adherent.Histo != null && adherent.Histo.Any() ? JsonConvert.SerializeObject(adherent.Histo) : null
             };
         }

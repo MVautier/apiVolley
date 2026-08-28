@@ -87,6 +87,14 @@ namespace ApiColomiersVolley.DAL.Entities
         /// </summary>
         [Column("cotisation_c3l")]
         public int? CotisationC3L { get; set; }
+        /// <summary>
+        /// Lien de parenté déclaré par un membre du foyer vis-à-vis du payeur, tel que saisi
+        /// à l'inscription : P (parent), C (conjoint), E (enfant), F (frère), S (sœur). Null
+        /// pour le payeur lui-même. Détermine l'éligibilité au tarif réduit, d'où son
+        /// enregistrement : sans lui, aucun contrôle du montant facturé n'est possible.
+        /// </summary>
+        [Column("lien_parente", TypeName = "varchar(1)")]
+        public string? Relationship { get; set; }
 
         public virtual Section? Section { get; set; }
         public virtual Category? Category { get; set; }

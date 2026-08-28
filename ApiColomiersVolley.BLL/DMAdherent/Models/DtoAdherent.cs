@@ -46,6 +46,11 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Models
         /// membre du foyer), la commande ne portant que le total.
         /// </summary>
         public int? CotisationC3L { get; set; }
+        /// <summary>
+        /// Lien de parenté d'un membre du foyer avec le payeur : P, C, E, F ou S.
+        /// Null pour le payeur. Conditionne l'éligibilité au tarif réduit.
+        /// </summary>
+        public string? Relationship { get; set; }
 
         // Champs saisis par l'admin
         public int? Saison { get; set; }
