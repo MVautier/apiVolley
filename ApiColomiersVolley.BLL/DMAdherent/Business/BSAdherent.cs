@@ -541,12 +541,18 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
         /// Passe l'adhérent en paiement terminé et renseigne sa part CLLL. Retourne true si
         /// quelque chose a changé, donc s'il faut le sauvegarder.
         /// </summary>
-        private static bool SetPaymentDone(DtoAdherent adherent, IDictionary<string, int> cotisationC3LByUid)
+        private static bool SetPaymentDone(DtoAdherent adherent, IDictionary<string, int> cotisationC3LByUid, int? saison = null)
         {
             bool changed = false;
             if (adherent.Payment != "Terminé")
             {
                 adherent.Payment = "Terminé";
+                changed = true;
+            }
+
+            if (!adherent.Saison.HasValue && saison.HasValue)
+            {
+                adherent.Saison = saison;
                 changed = true;
             }
 
@@ -641,11 +647,16 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     await _adherentRepo.AddOrUpdate(adherent);
                 }
 
+                // Saison nulle toléree : le formulaire membre a longtemps enregistre les membres
+                // sans saison. Les exclure ici laissait un adhérent ayant payé en "En attente"
+                // dès lors que le navigateur ne revenait pas sur le site après le paiement, le
+                // webhook étant alors le seul chemin de finalisation. La saison du parent leur
+                // est réappliquée au passage.
                 var membres = (await _adherentRepo.GetAdherents())
-                    .Where(a => a.IdParent == adherent.IdAdherent && a.Saison == adherent.Saison);
+                    .Where(a => a.IdParent == adherent.IdAdherent && (a.Saison == adherent.Saison || a.Saison == null));
                 foreach (var membre in membres)
                 {
-                    if (SetPaymentDone(membre, cotisationC3LByUid))
+                    if (SetPaymentDone(membre, cotisationC3LByUid, adherent.Saison))
                     {
                         await _adherentRepo.AddOrUpdate(membre);
                     }
