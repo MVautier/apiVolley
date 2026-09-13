@@ -1,5 +1,6 @@
 ﻿using ApiColomiersVolley.BLL.Core.Helloasso.Interfaces;
 using ApiColomiersVolley.BLL.Core.Helloasso.Models;
+using ApiColomiersVolley.BLL.Core.Tools;
 using ApiColomiersVolley.BLL.Core.Tools.Interfaces;
 using ApiColomiersVolley.BLL.Core.Tools.Models;
 using ApiColomiersVolley.BLL.DMAdherent.Business.Interfaces;
@@ -179,9 +180,10 @@ namespace ApiColomiersVolley.BLL.Core.Helloasso
         private RestClient GetClient(string route)
         {
             var options = new RestClientOptions(route);
-            if (_config.GetValue<string>("Environment") == "production")
+            var proxy = ProxyProvider.GetProxy(_config);
+            if (proxy != null)
             {
-                options.Proxy = new WebProxy("http://winproxy.server.lan:3128/", true);
+                options.Proxy = proxy;
             }
 
             var client = new RestClient(options);

@@ -32,10 +32,10 @@ namespace ApiColomiersVolley.BLL.Core.Tools
         private HttpClient GetClient(string fournisseur)
         {
             HttpClient client;
-            if (_config.GetValue<string>("Environment") == "production")
+            var proxy = ProxyProvider.GetProxy(_config);
+            if (proxy != null)
             {
-                var proxiedHttpClientHandler = new HttpClientHandler() { UseProxy = true };
-                proxiedHttpClientHandler.Proxy = new WebProxy("http://winproxy.server.lan:3128/", true);
+                var proxiedHttpClientHandler = new HttpClientHandler() { UseProxy = true, Proxy = proxy };
                 client = new HttpClient(proxiedHttpClientHandler);
             }
             else
