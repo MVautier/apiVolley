@@ -82,7 +82,14 @@ namespace ApiColomiersVolley.DAL.DataProviders
 
         public async Task<DtoAdherent> GetByUid(string uid)
         {
-            return (await GetAll().FirstOrDefaultAsync(a => a.Uid == uid)).ToDtoAdherent();
+            // L'uid est unique en base (index ux_adherent_uid), mais d'anciens doublons
+            // (même personne, une ligne par saison) ont existé : sans tri, FirstOrDefault
+            // renvoyait la plus ancienne et le webhook Helloasso finalisait la mauvaise ligne.
+            return (await GetAll()
+                .Where(a => a.Uid == uid)
+                .OrderByDescending(a => a.Saison)
+                .ThenByDescending(a => a.IdAdherent)
+                .FirstOrDefaultAsync()).ToDtoAdherent();
         }
 
         public async Task<PagedList<DtoAdherent>> GetPagedAdherents(AdherentFilter? filter, Sorting? sorting, Pagination? pagination)

@@ -295,6 +295,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
 
                 try
                 {
+                    await ResolveExistingByUid(adherent);
                     var result = await _adherentRepo.AddOrUpdate(adherent);
                     results.Add(new BatchAdherentResult { Adherent = result });
                 }
@@ -304,6 +305,33 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                 }
             }
             return results;
+        }
+
+        /// <summary>
+        /// Une personne n'a qu'une ligne, mise à jour à chaque saison. Si le front envoie
+        /// IdAdherent = 0 avec l'uid d'un adhérent existant (parcours "Nouvelle inscription"
+        /// d'un ancien adhérent retrouvé en cours de saisie), on met à jour sa ligne au lieu
+        /// d'en créer une seconde, en conservant l'historique des saisons précédentes.
+        /// </summary>
+        private async Task ResolveExistingByUid(DtoAdherent adherent)
+        {
+            if (adherent.IdAdherent > 0 || string.IsNullOrEmpty(adherent.Uid))
+            {
+                return;
+            }
+
+            var existing = await _adherentRepo.GetByUid(adherent.Uid);
+            if (existing == null)
+            {
+                return;
+            }
+
+            adherent.IdAdherent = existing.IdAdherent;
+            if (existing.Histo != null && existing.Histo.Any())
+            {
+                adherent.Histo ??= new List<DtoHisto>();
+                adherent.Histo.AddRange(existing.Histo.Where(h => !adherent.Histo.Any(a => a.saison == h.saison)));
+            }
         }
 
         public async Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent)
@@ -322,6 +350,8 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     adherent.PostalCode = "";
                 if (string.IsNullOrEmpty(adherent.City))
                     adherent.City = "";
+
+                await ResolveExistingByUid(adherent);
 
                 if (adherent.InscriptionDate.HasValue)
                 {
@@ -349,6 +379,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                         {
                             membre.IdParent = result.IdAdherent;
                             membre.Payment = result.Payment;
+                            await ResolveExistingByUid(membre);
                             await _adherentRepo.AddOrUpdate(membre);
                         }
                     }
