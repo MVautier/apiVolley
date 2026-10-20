@@ -20,6 +20,7 @@ namespace ApiColomiersVolley.BLL.Core.Tools.Interfaces
         Task<string> ReadFileAsString(FileInfo file);
         Task<byte[]> ReadFileAsBytes(FileInfo file);
         void MoveFile(string fullName, string destFullName);
+        void CopyFile(string fullName, string destFullName);
         void DeleteFile(string fullName);
         Task CreateFile(string fullName, string content);
         Task CreateFile(string fullName, IFormFile file);

@@ -334,6 +334,81 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
             }
         }
 
+        /// <summary>
+        /// Les documents sont rangés par saison (uid/saison/). Un ancien adhérent qui se réinscrit
+        /// sans fournir de nouvelle photo (le front lui présente l'ancienne comme valide) arrive avec
+        /// Photo vide : on reprend sa photo la plus récente des saisons précédentes et on la copie
+        /// dans le dossier de la saison, sinon l'inscription reste sans photo.
+        /// </summary>
+        private async Task ReusePreviousPhoto(DtoAdherent adherent)
+        {
+            if (!string.IsNullOrEmpty(adherent.Photo) || string.IsNullOrEmpty(adherent.Uid) || !adherent.Saison.HasValue)
+            {
+                return;
+            }
+
+            try
+            {
+                var basePath = _fileManager.InitAdherentPaths(adherent.Uid, false).BasePath;
+                var seasonPath = Path.Combine(basePath, adherent.Saison.Value.ToString());
+                var photo = FindPhoto(seasonPath);
+                if (photo == null)
+                {
+                    var previous = Enumerable.Range(1, PreviousSeasonsForPhoto)
+                        .Select(i => Path.Combine(basePath, (adherent.Saison.Value - i).ToString()))
+                        .Append(basePath)
+                        .Select(FindPhoto)
+                        .FirstOrDefault(f => f != null);
+                    if (previous == null)
+                    {
+                        return;
+                    }
+
+                    _fileManager.CopyFile(previous.FullName, Path.Combine(seasonPath, previous.Name));
+                    photo = previous;
+                }
+
+                adherent.Photo = adherent.Uid + "/" + photo.Name;
+            }
+            catch (Exception ex)
+            {
+                // La photo ne doit jamais bloquer l'enregistrement de l'inscription
+                await _mailManager.SendMailErreur(ex, $"Reprise de la photo impossible (uid={adherent.Uid}, saison={adherent.Saison})");
+            }
+        }
+
+        private const int PreviousSeasonsForPhoto = 5;
+
+        private FileInfo? FindPhoto(string path)
+        {
+            return _fileManager.FindFiles(path)?
+                .Where(f => _fileManager.GetTypeByName(f.Name) == "photo")
+                .OrderByDescending(f => f.LastWriteTime)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Rattrapage des inscriptions de la saison enregistrées sans photo alors qu'une photo
+        /// existe dans une saison précédente. Renvoie la liste des adhérents corrigés.
+        /// </summary>
+        public async Task<List<string>> RepairPhotos(int saison)
+        {
+            var repaired = new List<string>();
+            var adherents = (await _adherentRepo.GetAdherents())
+                .Where(a => a.Saison == saison && string.IsNullOrEmpty(a.Photo));
+            foreach (var adherent in adherents)
+            {
+                await ReusePreviousPhoto(adherent);
+                if (!string.IsNullOrEmpty(adherent.Photo))
+                {
+                    await _adherentRepo.AddOrUpdate(adherent);
+                    repaired.Add($"{adherent.IdAdherent} {adherent.LastName} {adherent.FirstName} -> {adherent.Photo}");
+                }
+            }
+
+            return repaired;
+        }
+
         public async Task<DtoAdherent> AddOrUpdate(DtoAdherent adherent)
         {
             try
@@ -352,6 +427,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                     adherent.City = "";
 
                 await ResolveExistingByUid(adherent);
+                await ReusePreviousPhoto(adherent);
 
                 if (adherent.InscriptionDate.HasValue)
                 {
@@ -380,6 +456,7 @@ namespace ApiColomiersVolley.BLL.DMAdherent.Business
                             membre.IdParent = result.IdAdherent;
                             membre.Payment = result.Payment;
                             await ResolveExistingByUid(membre);
+                            await ReusePreviousPhoto(membre);
                             await _adherentRepo.AddOrUpdate(membre);
                         }
                     }

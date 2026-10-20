@@ -223,6 +223,17 @@ namespace ApiColomiersVolley.BLL.Core.Tools
             File.Move(fullName, destFullName);
         }
 
+        public void CopyFile(string fullName, string destFullName)
+        {
+            var path = Path.GetDirectoryName(destFullName);
+            if (!string.IsNullOrEmpty(path) && !Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            File.Copy(fullName, destFullName, true);
+        }
+
         public void DeleteFile(string fullName)
         {
             if (File.Exists(fullName))
