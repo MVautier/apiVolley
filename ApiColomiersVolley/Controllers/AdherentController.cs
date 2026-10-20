@@ -302,18 +302,16 @@ namespace ApiColomiersVolley.Controllers
             return Ok(await _bsAdherent.RepairDocs());
         }
 
-        /// <summary>
-        /// Rattrapage : reprend la photo d'une saison précédente pour les adhérents de la saison
-        /// inscrits sans photo (réinscription sans nouvelle photo). Idempotent.
-        /// </summary>
-        /// <param name="saison">La saison à corriger, ex. 2026</param>
-        /// <returns>Une réponse HTTP 200 contenant la liste des adhérents corrigés</returns>
-        [HttpGet]
-        [Route("repairPhotos/{saison}")]
-        public async Task<ActionResult> RepairPhotos(int saison)
-        {
-            return Ok(await _bsAdherent.RepairPhotos(saison));
-        }
+        // Rattrapage ponctuel (octobre 2026, 41 adhérents) : reprend la photo d'une saison
+        // précédente pour les adhérents de la saison inscrits sans photo. Désactivé car sans
+        // authentification ; décommenter pour un nouveau rattrapage (idempotent).
+        // GET api/Adherent/repairPhotos/{saison}
+        //[HttpGet]
+        //[Route("repairPhotos/{saison}")]
+        //public async Task<ActionResult> RepairPhotos(int saison)
+        //{
+        //    return Ok(await _bsAdherent.RepairPhotos(saison));
+        //}
 
         /// <summary>
         /// Envoie un message a une liste d'adresses email (liste de diffusion non persistee, constituee cote client)
